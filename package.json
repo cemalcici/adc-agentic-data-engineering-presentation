@@ -1,0 +1,11 @@
+{
+  "name": "adc-agentic-data-engineering-presentation",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx --yes hyperframes@0.8.5 preview",
+    "check": "npx --yes hyperframes@0.8.5 check",
+    "render": "npx --yes hyperframes@0.8.5 render",
+    "publish": "npx --yes hyperframes@0.8.5 publish"
+  }
+}
