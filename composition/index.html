@@ -1,59 +1,2317 @@
 <!doctype html>
-<html lang="en" data-resolution="landscape">
+<html lang="tr" data-resolution="landscape">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1920, height=1080" />
-    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <title>Agentic Data Engineering</title>
+    <link rel="stylesheet" href="assets/fonts/fonts.css" />
+    <script src="vendor/gsap.min.js"></script>
     <style>
-      * {
+      *,
+      *::before,
+      *::after {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
+
+      :root {
+        --bg: #07090c;
+        --panel: #10151d;
+        --panel-2: #161d28;
+        --line: #202a38;
+        --text: #e9eef5;
+        --muted: #93a1b3;
+        --dim: #5d6b7d;
+        --accent: #ffb020;
+        --accent-soft: rgba(255, 176, 32, 0.12);
+        --good: #3dd68c;
+        --bad: #ff5f56;
+        --pad-x: 150px;
+        --pad-y: 118px;
+      }
+
       html,
       body {
-        margin: 0;
         width: 1920px;
         height: 1080px;
         overflow: hidden;
-        background: #000;
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Inter", system-ui, sans-serif;
+        font-feature-settings: "ss01", "cv01";
+        -webkit-font-smoothing: antialiased;
       }
-      body {
-        font-family: "Inter", sans-serif;
+
+      /* Scenes stack and the root timeline reveals exactly one. Hiding needs all
+         three properties: opacity alone leaves an invisible layer that still
+         swallows clicks on the slide underneath. */
+      .scene-frame {
+        position: absolute;
+        inset: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--bg);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
       }
-      code,
-      pre,
-      .monospace {
-        font-family: "JetBrains Mono", monospace;
+      .pad {
+        position: absolute;
+        inset: 0;
+        padding: var(--pad-y) var(--pad-x);
+        display: flex;
+        flex-direction: column;
+      }
+      .pad.center {
+        justify-content: center;
+      }
+      .pad.middle {
+        justify-content: center;
+      }
+
+      /* A thin accent rule at the top edge marks the section colour. */
+      /* Fills across the main line so the room can see how much talk is left.
+         Branch slides hold it at full rather than jumping backwards. */
+      #deck-progress {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 40;
+        height: 4px;
+        width: 1920px;
+        transform: scaleX(0);
+        transform-origin: 0 50%;
+        background: linear-gradient(90deg, var(--accent), #ff8a3d);
+      }
+
+      .eyebrow {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 25px;
+        font-weight: 500;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 34px;
+      }
+      .eyebrow.plain {
+        color: var(--dim);
+      }
+
+      h1 {
+        font-size: 104px;
+        font-weight: 800;
+        line-height: 1.06;
+        letter-spacing: -0.028em;
+      }
+      h2 {
+        font-size: 74px;
+        font-weight: 700;
+        line-height: 1.14;
+        letter-spacing: -0.022em;
+        max-width: 1520px;
+      }
+      h2.tight {
+        font-size: 64px;
+      }
+      h2 em {
+        font-style: normal;
+        color: var(--accent);
+      }
+
+      .lede {
+        font-size: 40px;
+        line-height: 1.42;
+        color: var(--muted);
+        max-width: 1400px;
+        margin-top: 40px;
+        font-weight: 400;
+      }
+      .lede strong {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      /* Sources are a credibility device, so they get a fixed home on
+         every slide rather than being tucked wherever there is room. */
+      .source {
+        position: absolute;
+        left: var(--pad-x);
+        bottom: 56px;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 24px;
+        line-height: 1.55;
+        color: var(--dim);
+        max-width: 1300px;
+      }
+      .source b {
+        color: var(--muted);
+        font-weight: 500;
+      }
+      .tag {
+        display: inline-block;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 21px;
+        letter-spacing: 0.08em;
+        padding: 3px 10px;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        color: var(--dim);
+        vertical-align: 2px;
+      }
+      .tag.warn {
+        color: var(--accent);
+        border-color: var(--accent-dim, #4a3a14);
+        background: var(--accent-soft);
+      }
+
+      .slide-no {
+        position: absolute;
+        right: 64px;
+        top: 52px;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 21px;
+        color: #2c3745;
+        letter-spacing: 0.1em;
+      }
+
+      /* --- cards ------------------------------------------------- */
+      .cards {
+        display: grid;
+        gap: 26px;
+        margin-top: 62px;
+      }
+      .cards.c2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .cards.c3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .cards.c4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 34px 32px;
+      }
+      .card h3 {
+        font-size: 34px;
+        font-weight: 650;
+        line-height: 1.25;
+        margin-bottom: 16px;
+      }
+      .card p {
+        font-size: 30px;
+        line-height: 1.44;
+        color: var(--muted);
+      }
+      .card .k {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 24px;
+        color: var(--accent);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 14px;
+      }
+      .card.accent {
+        border-color: rgba(255, 176, 32, 0.34);
+        background: linear-gradient(180deg, rgba(255, 176, 32, 0.07), rgba(255, 176, 32, 0.02));
+      }
+
+      /* --- stat -------------------------------------------------- */
+      .stat {
+        font-size: 210px;
+        font-weight: 800;
+        letter-spacing: -0.05em;
+        line-height: 0.92;
+        color: var(--accent);
+      }
+      .stat.sm {
+        font-size: 148px;
+      }
+      .stat-row {
+        display: flex;
+        gap: 92px;
+        align-items: flex-end;
+        margin-top: 54px;
+      }
+      .stat-unit {
+        font-size: 34px;
+        color: var(--muted);
+        line-height: 1.35;
+        max-width: 420px;
+        padding-bottom: 22px;
+      }
+
+      /* --- list -------------------------------------------------- */
+      .rows {
+        margin-top: 56px;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 92px 1fr;
+        gap: 30px;
+        align-items: start;
+        padding: 24px 30px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--panel);
+      }
+      .row .n {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 30px;
+        color: var(--accent);
+        padding-top: 4px;
+      }
+      .row .t {
+        font-size: 33px;
+        line-height: 1.36;
+      }
+      .row .t span {
+        display: block;
+        font-size: 29px;
+        color: var(--muted);
+        margin-top: 9px;
+      }
+      /* Fragment items are revealed by the playhead, so they rest hidden. */
+      .frag {
+        opacity: 0;
+      }
+
+      /* --- two-column compare ------------------------------------ */
+      .compare {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-top: 58px;
+      }
+      .col {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 36px 34px;
+        background: var(--panel);
+      }
+      .col.now {
+        border-color: #2a3543;
+      }
+      .col.next {
+        border-color: rgba(255, 176, 32, 0.34);
+        background: linear-gradient(180deg, rgba(255, 176, 32, 0.06), rgba(255, 176, 32, 0.015));
+      }
+      .col h3 {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 23px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--dim);
+        margin-bottom: 26px;
+      }
+      .col.next h3 {
+        color: var(--accent);
+      }
+      .col ul {
+        list-style: none;
+      }
+      .col li {
+        font-size: 32px;
+        line-height: 1.4;
+        padding: 15px 0 15px 34px;
+        position: relative;
+        border-top: 1px solid rgba(32, 42, 56, 0.7);
+      }
+      .col li:first-child {
+        border-top: 0;
+      }
+      .col li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 27px;
+        width: 12px;
+        height: 2px;
+        background: var(--dim);
+      }
+      .col.next li::before {
+        background: var(--accent);
+      }
+      /* The scope slide carries two full lists at once; nothing else needs this. */
+      .compare.compact li {
+        font-size: 30px;
+        padding: 12px 0 12px 34px;
+      }
+      .compare.compact li::before {
+        top: 24px;
+      }
+
+      /* --- ladder ------------------------------------------------ */
+      .ladder {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 18px;
+        margin-top: 64px;
+        align-items: end;
+      }
+      .step {
+        border: 1px solid var(--line);
+        border-radius: 12px 12px 0 0;
+        border-bottom: 3px solid var(--line);
+        background: var(--panel);
+        padding: 26px 24px 24px;
+      }
+      .step .lvl {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 22px;
+        color: var(--dim);
+        letter-spacing: 0.12em;
+        margin-bottom: 12px;
+      }
+      .step h3 {
+        font-size: 30px;
+        font-weight: 650;
+        margin-bottom: 14px;
+      }
+      .step p {
+        font-size: 22px;
+        line-height: 1.42;
+        color: var(--muted);
+      }
+      .step.here {
+        border-color: rgba(255, 176, 32, 0.45);
+        border-bottom: 3px solid var(--accent);
+        background: linear-gradient(180deg, rgba(255, 176, 32, 0.09), rgba(255, 176, 32, 0.02));
+      }
+      .step.here .lvl {
+        color: var(--accent);
+      }
+
+      /* --- table ------------------------------------------------- */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 34px;
+        font-size: 26px;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 15px 18px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+        line-height: 1.35;
+      }
+      th {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 22px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--dim);
+        font-weight: 500;
+        border-bottom-color: #2a3543;
+      }
+      td.name {
+        font-weight: 600;
+      }
+      .pad.reference {
+        padding: 48px var(--pad-x) 40px;
+      }
+      .pad.reference table {
+        margin-top: 24px;
+      }
+      .pad.reference table {
+        font-size: 24px;
+      }
+      .pad.reference th,
+      .pad.reference td {
+        padding: 9px 16px;
+      }
+      td.mono,
+      th.mono {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 23px;
+        color: var(--muted);
+      }
+      .ok {
+        color: var(--good);
+      }
+      .no {
+        color: var(--bad);
+      }
+
+      /* --- misc -------------------------------------------------- */
+      .quote {
+        font-size: 46px;
+        line-height: 1.38;
+        font-weight: 500;
+        border-left: 4px solid var(--accent);
+        padding-left: 40px;
+        max-width: 1420px;
+        margin-top: 52px;
+      }
+      .quote cite {
+        display: block;
+        font-style: normal;
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 22px;
+        color: var(--dim);
+        margin-top: 26px;
+        letter-spacing: 0.04em;
+      }
+      code {
+        font-family: "JetBrains Mono", ui-monospace, monospace;
+        font-size: 0.88em;
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        padding: 2px 9px;
+        color: var(--accent);
+      }
+      .kicker {
+        margin-top: 54px;
+        font-size: 36px;
+        line-height: 1.4;
+        color: var(--text);
+        border-top: 1px solid var(--line);
+        padding-top: 34px;
+        max-width: 1500px;
+      }
+      .kicker b {
+        color: var(--accent);
+        font-weight: 650;
       }
     </style>
   </head>
   <body>
+    <script type="application/hyperframes-slideshow+json">
+      {
+        "slides": [
+          {
+            "sceneId": "kapak",
+            "notes": "Kendinizi tanıtın ve sözü hemen bağlayın. Bu sunum iki parça: kırk beş dakika kavram, on beş dakika çalışan sistem. Sunumun sonunda sizden bir karar beklemiyorum. Sizden şu soruyu yanınızda götürmenizi bekliyorum: bizim ekipte kuralın yetişemediği yer neresi?"
+          },
+          {
+            "sceneId": "hook",
+            "notes": "Odayı burada kazanın. Herkesin yaşadığı anı anlatın: pipeline yeşil, dashboard doluyor, ve sorunu size dışarıdan biri söylüyor. Sonra rakamı verin. Microsoft Teams'in yüz elli iki yüksek şiddetli olayını inceleyen çalışmada olayların yalnızca yüzde elli beşini otomatik izleyiciler yakalamış, yüzde yirmi dokuzunu dışarıdaki kullanıcılar bildirmiş. Vurgu şu: bu Microsoft. Kaynağı, insanı, bütçesi olan bir ekip. Yani sorun özen eksikliği değil."
+          },
+          {
+            "sceneId": "bugun-kural",
+            "notes": "Salondaki herkesin işini tarif edin, ve saygıyla tarif edin. Bu dört kutu çalışan mühendisliktir, kimse burada yanlış bir şey yapmıyor. Önemli cümle şu: bugün güvenilirliği yöneten tek mekanizma, birinin önceden yazdığı kurallar. Bunu söyleyip geçin, tartışmayın. Bir sonraki slaytta zaten çökecek."
+          },
+          {
+            "sceneId": "kuralin-varsayimi",
+            "notes": "Bölümün tezi burada. Her test, her eşik, her runbook bir tahmindir: birisi oturmuş ve bunun bozulabileceğini düşünmüştür. Yani kural kümeniz, ekibinizin hayal gücünün haritasıdır. Redyuk ve arkadaşlarının cümlesini yüksek sesle okuyun, çünkü sizin kelimelerinizden daha çok çarpıyor: kural her zaman olaydan sonra yazılır. Sonra Google TFX alıntısına geçin ve şunu vurgulayın: kuralları en büyük ölçekte işleten ekip, kural kümesinin eksiksiz olabileceği iddiasını kendisi reddediyor. Salona bir soru bırakın: geçen ay yaşadığınız en kötü veri olayının önceden yazılmış bir kuralı var mıydı?"
+          },
+          {
+            "sceneId": "gurultu",
+            "notes": "Üç parçalı açılım, sırayla gidin. İlk açılımda Lumos rakamını verin: Microsoft'un Skype ve Teams alarmlarını dört ay boyunca üretimde ölçtüğü çalışmada, alarmların yüzde doksanından fazlası hiç çıkmamalıymış. Metrik bazında yüzde doksan ile yüzde doksan sekiz virgül iki arasında değişiyor. İkinci açılım Tencent: tek bir sistemde elli dokuz bin altı yüz yedi aktif alarm kuralı. Üçüncüsü en can alıcı olanı: bazı sistemler hiç arıza yaşamadan günde on binlerce alarm üretiyor. Bunların satıcı anketi olmadığını özellikle söyleyin; hepsi hakemli akademik çalışmaların üretim ölçümü.",
+            "fragments": [
+              40.1,
+              40.25,
+              40.4
+            ]
+          },
+          {
+            "sceneId": "kural-curumesi",
+            "notes": "Kural envanteri bakım ister, ve bu bakımın maliyeti görünmezdir. Monte Carlo telemetrisine göre kural tabanlı monitörler anomali tespitine göre yaklaşık yüzde kırk daha fazla bakım dokunuşu istiyor. Haftada elli alarmı geçen bir kanalda etkileşim yüzde on beş düşüyor, yüzü geçince yüzde yirmi daha. Burada salona sorun: kaç kişinin susturulmuş bir alarm kanalı var? Eller kalkar, ve o eller sizin argümanınızdır. Sonra Azure ekibinin cümlesini okuyun."
+          },
+          {
+            "sceneId": "kok-neden",
+            "notes": "Burada dürüstlük yapın, çünkü bu slayt kendi demonuzu zorluyor. Monte Carlo'nun on bir milyon tablodan çıkardığı kök neden dağılımında şema kayması yalnızca yüzde yedi virgül sekiz. Bunu saklamayın, tam tersine öne çıkarın: demoda şema kayması kullanıyoruz çünkü en temiz gösterilebilir olan o, en yaygın olan değil. Asıl rakam ise şu: olayların yaklaşık yüzde otuz dördü aslında olay bile değil. Yani ekibiniz zamanının üçte birini var olmayan bir problemi kovalayarak geçiriyor."
+          },
+          {
+            "sceneId": "insan-faturasi",
+            "notes": "Fatura sistemin değil, nöbetteki insanın üstünde birikiyor. Ayda altmış yedi olay, olay başına ortalama on beş saat. En acı rakam sonuncusu: olayların yüzde yetmiş dördünde sorunu iş tarafı veri ekibinden önce fark ediyor. Catchpoint'in SRE anketinde toil medyanı yüzde yirmi, operasyon işi medyanı yüzde otuz. Bunların satıcı anketi olduğunu şimdi kendiniz söyleyin, çünkü bir sonraki slayt zaten o freni çekiyor. Freni siz çekerseniz salondaki şüpheci çekmek zorunda kalmaz."
+          },
+          {
+            "sceneId": "durustluk-freni",
+            "notes": "Bu slayt sunumun güvenilirliğini taşıyor, o yüzden acele etmeyin. Satıcı anketi soruyu kendi cevabına göre sorar. SANS'in satıcı olmayan anketinde, dört yüz üç katılımcı içinde alarm aşırı yükünü en büyük engel sayanlar yalnızca yüzde dört virgül altı. Aynı olgu, iki farklı soru, iki farklı dünya. Sonra bölümün tezini söyleyin: sorun kuralların yanlış olması değil, kuralın kapsayamadığı alanın kural yazma hızınızdan daha hızlı büyümesi. Vaktiniz varsa ya da soru gelirse, sağ alttaki kutucuğa tıklayıp kullanmadığım istatistikler slaytını açabilirsiniz.",
+            "hotspots": [
+              {
+                "id": "h-istatistik",
+                "label": "Kullanmadığım istatistikler ve nedenleri",
+                "target": "istatistik-hijyeni",
+                "region": {
+                  "x": 62,
+                  "y": 63,
+                  "w": 33,
+                  "h": 17
+                }
+              }
+            ]
+          },
+          {
+            "sceneId": "uc-evre",
+            "notes": "Kısa tutun, bu bir geçiş slaytı. Otomasyon manuel script'lerin yerini aldı. Asistanlık yazma hızını artırdı ama direksiyon insanda kaldı. Otonomi farklı bir şey: karar döngüsünün bir kısmını devrediyorsunuz. Salondaki öğrenciler için net söyleyin, üçüncü evre yeni ve henüz kanıtlanmamış."
+          },
+          {
+            "sceneId": "copilot-ajan",
+            "notes": "Tek cümlelik fark: copilot şunu yazabilirsin der, ajan şunu yaptım onaylıyor musun der. Bu bir hız farkı değil, sorumluluğun yer değiştirmesi. Copilot'ta hata sizin hatanızdır çünkü siz yazdınız. Ajanda hata sizin onayınızdır çünkü siz onayladınız. Bu ayrımı burada kurun, çünkü guardrail bölümünün tamamı bunun üzerine oturuyor."
+          },
+          {
+            "sceneId": "niyet-odakli",
+            "notes": "Örneği yüksek sesle okuyun, çünkü örneğin kendisi argümandır. Stripe abonelik olaylarını depoya al, event ID'ye göre tekilleştir, tarihe göre partition'la. Bu bir şartname; kod değil, pseudo-kod da değil. Siz ne istediğinizi yazıyorsunuz, nasıl yapılacağını ajan çözüyor, ve diff'i yine siz onaylıyorsunuz. Zihinsel model şu: makine hızında çalışan ve test yazmayı asla unutmayan bir junior mühendisin pull request'ini incelemek."
+          },
+          {
+            "sceneId": "neden-simdi",
+            "notes": "Dört açılım, hızlı gidin ama dördüncüde durun. Birincisi: modeller artık araç çağırabiliyor, sadece metin üretmiyor. İkincisi: ajan çerçeveleri bir nokta sıfır seviyesine geldi. Üçüncüsü: MCP bir satıcı özelliği olmaktan çıkıp standart oldu, Anthropic aralık iki bin yirmi beşte Linux Foundation'a bağışladı. Dördüncüsü talep, ve burada duraklayın. dbt Labs'ın nisan iki bin yirmi altı anketinde ekiplerin yüzde yetmiş ikisi AI destekli kod yazmayı önceliklendiriyor, ama yalnızca yüzde yirmi dördü AI destekli pipeline yönetimini. Boşluk tam burada, ve bu sunum o boşluğun içinde duruyor.",
+            "fragments": [
+              120.1,
+              120.25,
+              120.4,
+              120.55
+            ]
+          },
+          {
+            "sceneId": "ajan-dongusu",
+            "notes": "Sunumun tek diyagramı. Yavaş anlatın, çünkü sonraki altı slayt bu diyagramın üzerine katman biniyor. Bir ajan düşünen bir program değildir; çıkış koşulu modelin araç çağırmayı bırakması olan bir döngüdür. Ortadaki kesikli kutuyu gösterin: araçlar sizin kodunuz. Ajanın yapabileceği her şey, sizin ona verdiğiniz fonksiyonların toplamıdır, bir fazlası değil. Sonra sağdaki dört meşru çıkışı gösterin, çünkü bir sonraki bölümün tamamı hangi çıkışı seçtiğinizle ilgili."
+          },
+          {
+            "sceneId": "grounding",
+            "notes": "Halüsinasyonu doğru tanımlayın; bu, öğrenciler için sunumun en değerli slaytı olabilir. Model şemayı bilmiyorsa uydurmuyor, en olası şemayı yazıyor. Ve en olası şema çoğu zaman sizinkine çok benzediği için hata gözden kaçıyor. Yani halüsinasyon bir model arızası değil, boş bırakılmış bir bağlam alanının istatistiksel olarak doldurulmasıdır. Çözüm daha akıllı model değil, daha dolu bağlam: canlı şema, lineage, çalıştırma logları, katalog metadata. Demoda göreceğiniz ajan da tam olarak bunu yapıyor, önce kaynağı okuyor sonra konuşuyor."
+          },
+          {
+            "sceneId": "self-correction",
+            "notes": "Bu slayt sunumun en pratik cümlesini taşıyor: bir ajanın gücü yazdığı koddan değil, o kodu ucuza yanlışlayabilen doğrulayıcısından gelir. Doğrulayıcı ucuz ve deterministik olmalı, çünkü pahalıysa ajan onu yeterince sık çalıştıramaz. Doğrulayıcı seçiminin bir detay olmadığını somut örnekle gösterin: demodaki sistem önce yalnızca SQL parse etmeyi denedi, ama var olmayan bir kolonu okuyan bir view tertemiz parse ediyor. Yani yanlış doğrulayıcı size yeşil ışık verir. Kapanış cümlesi: dbt compile'ınız yoksa, ajanınız da yoktur."
+          },
+          {
+            "sceneId": "hafiza",
+            "notes": "Hafıza sezgiye aykırı bir takas. Hızlandırır, ve tam olarak aynı oranda eskitir: dün doğru olan cevabı, bugün değişmiş bir sistem hakkında aynı özgüvenle tekrarlar. Anthropic'in kendi iç analitik ajanında bakımsız bırakılan bağlam katmanı doğruluğu bir ay içinde yüzde doksan beşten yaklaşık yüzde altmış beşe düşürmüş. Bunun birinci taraf bir kaynak olduğunu söyleyin. Demodaki sistemde hafıza bilerek yok; her olay sıfırdan teşhis ediliyor."
+          },
+          {
+            "sceneId": "planlama",
+            "notes": "Otonomi bir övgü değil, bir hasar yarıçapı ölçüsüdür. Doğru soru ajan gerçekten plan yapıyor mu değil, planı yanlış çıkarsa neye dokunabilir. Planlayıcı ne yapılacağına kendisi karar verir; uygulayıcı, bilinen bir problemin neye ihtiyacı olduğunu çözer. Demodaki sistem bilerek uygulayıcı yarısında duruyor, adımlar sabit bir graftan geçiyor. Bu bir eksiklik değil, bir pilot için doğru sıralama."
+          },
+          {
+            "sceneId": "gozlemlenebilirlik",
+            "notes": "Trace'i olmayan ajan hata ayıklanamaz, eval'i olmayan ajan iyileştirilemez, ikisi de yoksa elinizde bir sistem değil iyi giden bir demo vardır. Sonra kendi hatanızı anlatın, çünkü bu hikaye sizi dürüst gösterir: spesifikasyon ajanın takılmasını açıkça yasaklıyordu, test yeşildi, ve ajan her geçişte doksan saniye takılıyordu. Çünkü test ajan hayatta kaldı mı diye soruyordu, ne kadar sürdü diye değil. Kapanış: eval'iniz sorduğunuz soru kadar iyidir."
+          },
+          {
+            "sceneId": "determinizm",
+            "notes": "Bölümün kapanışı ve en kısa slayt. Aynı girdiye aynı çıktıyı vermeyen bir sistemi çıktısıyla test edemezsiniz, değişmezleriyle test edersiniz. Dört değişmezi tek tek okuyun ve şunu vurgulayın: dördü de modelin ne cevap verdiğinden tamamen bağımsız olarak doğrulanabilir. Bu yüzden ajanın testi, modelin testi değildir."
+          },
+          {
+            "sceneId": "hype-cycle",
+            "notes": "Risk bölümünü açarken tonu değiştirin, savunmadan değerlendirmeye geçin. Gartner ilk bağımsız Agentic AI Hype Cycle'ını nisan iki bin yirmi altıda yayınladı ve teknoloji tam tepede duruyor. Yüzde kırk üzeri iptal öngörüsü geri çekilmedi. Binlerce agentic AI satıcısından yaklaşık yüz otuzunun gerçek olduğu tahmin ediliyor. Kritik nüansı mutlaka söyleyin: iptal sebepleri model yetersizliği değil; maliyet, belirsiz iş değeri ve zayıf risk kontrolü. Yani hepsi düzeltilebilir yönetim problemleri."
+          },
+          {
+            "sceneId": "olculmus-sonuclar",
+            "notes": "Üç açılım. LinkedIn'in SQL Bot'u en dürüst kaynak, çünkü kendi zayıf rakamını kendisi yayınlamış: yanıtların yalnızca yüzde elli üçü teknik olarak doğru, ama kullanıcıların yüzde doksan beşi geçer notu veriyor. Ve en çok kullanılan özellik sorgu üretimi değil, sorgu patlayınca çıkan Fix with AI butonu, oturumların yüzde sekseni. Yani değer sıfırdan yazmakta değil, kırılanı onarmakta. Pinterest'te ilk seferde kabul yüzde yirmiden yüzde kırkın üzerine çıkmış; ikiye katlanmış ama hâlâ yarısından azı. ELT-Bench hikayesi ise kanıtı sorgulamayı öğretiyor: başarı önce yüzde üç virgül dokuz görünüyordu, benchmark'ın kendisi düzeltilince yüzde otuz iki virgül elli bire çıktı.",
+            "fragments": [
+              210.1,
+              210.25,
+              210.4
+            ]
+          },
+          {
+            "sceneId": "metr",
+            "notes": "Bu slaytta acele etmeyin. Alandaki tek randomize kontrollü deney, deneyimli geliştiricilerin AI ile yüzde on dokuz daha yavaş olduğunu buldu. Asıl bulgu ikinci cümlede: aynı geliştiriciler yüzde yirmi hızlandıklarını sanıyordu. Yani kendi hızınıza dair sezginiz veri değildir. Sonra salona çerçeveyi verin: bu, ajan kullanmayın demek değil; kendi algıladığınız kazancı kanıt sanmayın demek. Ölçün."
+          },
+          {
+            "sceneId": "bes-risk",
+            "notes": "Hızlı gidin, bunlar zaten sezgisel. Yalnız maliyet maddesinde durun: kaçak araç çağrıları ve döngüler token maliyetini beklenmedik biçimde büyütür, ve bu maliyet olay başına değil döngü başına birikir. Son maddeyi de vurgulayın: insan onayı geçici bir çözüm değil, sektörün bugün fiilen durduğu yer."
+          },
+          {
+            "sceneId": "guardrail",
+            "notes": "Bölümün en önemli slaytı, ve salondaki kural bazlı ekiplere verdiğiniz cevap burada. Guardrail prompt'ta değil IAM'de yaşar: kişisel bilgi sütunlarını sorgulama kuralı bir erişim politikasında olmalı, prompt penceresinde değil, çünkü prompt penceresindeki kural ikna edilebilir bir kuraldır. Üç insan kapısı desenini kısaca geçin. Sonra alttaki cümleyi tane tane söyleyin: agentic yaklaşım kural bazlıyı yok etmez, üstüne katman ekler. Deterministik kararlar kural motorunda kalır, ajan kuralın yazılmadığı yeri karşılar. Yani buradaki hiç kimsenin son on yılda yazdığı testler çöpe gitmiyor; tam tersine ajanın doğrulayıcısı oluyor."
+          },
+          {
+            "sceneId": "merdiven",
+            "notes": "Beş basamak, ve her basamakta tek bir soru: burada en kötü sonuç nedir? İzlemede en kötü sonuç kötü bir öneri. Önermede boşa giden bir inceleme. Sandbox'ta bozuk bir dal. Onaylı uygulamada sizin onayladığınız bir hata. Otonomide sessiz bir hata. Şunu vurgulayın: çoğu ekip ikinci ve üçüncü basamakta ciddi değer buluyor ve beşinciye hiç geçmesi gerekmiyor. On beş dakika sonra göreceğiniz sistem dördüncü basamakta duruyor."
+          },
+          {
+            "sceneId": "nereden-baslanir",
+            "notes": "Salondan çıkarken akıllarında kalmasını istediğiniz pratik slayt bu. Ajanı önce düzeltmesi için değil izlemesi için bırakın: yalnızca log, sorgu geçmişi ve metadata okuyabildiğinde en kötü sonuç kötü bir öneridir, bozuk bir pipeline değil. Üç düşük riskli iş sayın: dokümantasyon ve test üretimi, alarm triyajı, kök neden ön analizi. Üçü de geri alınabilir ve üçü de ölçülebilir. Kapanışta uyarıyı yapın: ajanın vaadi daha akıllı alarm olamaz, çünkü otomatik anomali tespiti de vakaların çoğunda yanlış alarm üretiyor. Vaat, teşhis ve doğrulama döngüsünün kendisidir."
+          },
+          {
+            "sceneId": "ekosistem",
+            "notes": "Bu slaytta ürün ismi ezberletmeye çalışmayın. Kategorileri anlatın, çünkü kategoriler kalıyor, isimler değişiyor. Ve bunu açıkça söyleyin: bu slayt altı ay sonra yanlış olacak. Sadece bu sunumu hazırlarken altı iddia çürüdü; bir satıcı veri mühendisliğinden tamamen pivot etmişti, bir ürünün adı değişmişti, iki ürünün olgunluk seviyesi yanlıştı. Detaylı tabloyu isteyen olursa sağdaki kutucuğa tıklayıp açabilirsiniz.",
+            "hotspots": [
+              {
+                "id": "h-ekosistem",
+                "label": "Detaylı karşılaştırma tablosu",
+                "target": "ekosistem-detay",
+                "region": {
+                  "x": 60,
+                  "y": 68,
+                  "w": 35,
+                  "h": 15
+                }
+              }
+            ]
+          },
+          {
+            "sceneId": "olcum",
+            "notes": "Gartner'ın iptal sebepleri buraya bağlanıyor. Dört metrik yeter: öneri kabul oranı, incelemede red oranı, olay başına token maliyeti, olay başına çözüm süresi. Sonra üç eşiği verin. Red oranı düşüyorsa otonomiyi bir basamak artırın. Token maliyeti tahmini iki katı aşarsa kapsamı daraltın. Yönetişim sahibi ya da net bir ROI metriği yoksa production'a hiç geçmeyin. Sonuncusu en çok ihmal edilen madde, o yüzden onun üstünde bir saniye fazla durun."
+          },
+          {
+            "sceneId": "kanit-boslugu",
+            "notes": "Kavram bölümünün dürüst kapanışı. Araştırmada şu zincirin tamamını üretimde çalıştırıp ölçtüğünü yayınlayan bir şirket bulamadık: şema kayması, tespit, teşhis, öneri, derleme kanıtı, insan onayı, uygulama, yeniden koşu. Parçaları yayınlanmış, tamamı ve ölçümü yayınlanmamış. Bunu bir zayıflık gibi değil bir konum gibi söyleyin: insan onayı adımı sektörün fiilen durduğu yer, ve şimdi size tam olarak orayı göstereceğim."
+          },
+          {
+            "sceneId": "demo-koprusu",
+            "notes": "Demoya geçiş. Dokuz adımı tek tek okuyun, çünkü seyirci birazdan bunları canlı görecek ve haritayı önceden vermek izlemeyi kolaylaştırır. Sonra merdivendeki yeri söyleyin: bu sistem dördüncü basamakta, yani öner artı onaylanmış değişiklik. Otonom değil, ve bu bir eksiklik değil bir tercih."
+          },
+          {
+            "sceneId": "demo-ne-var-ne-yok",
+            "notes": "Bu slayt sizi soru turunda kurtaracak, o yüzden atlamayın. Solda olmayanlar: uzun vadeli hafıza yok, her olay sıfırdan teşhis ediliyor. Planlama yok, adımlar sabit bir graf. MCP yok, sıradan istemci kütüphaneleri kullanılıyor. Üçü de bilinçli tercih ve üçünün de yazılı gerekçesi var. Sağda olanlar: canlı şemadan toplanan kanıt, gerçek derlemeyle doğrulama, iki kez kendini düzeltme, çözemezse açıklamalı kapanış, insan onay kapısı, uçtan uca trace ve olay başına bir centin altında maliyet. Kapanış cümlesini kendiniz söyleyin: bunlar eksiklik değil, merdivende bilerek bir basamak geride durmak. Kapıyı kaldırmak için gereken her şey mevcut; eksik olan güven, ve güven de önce bu basamakta çalıştırarak kazanılıyor."
+          },
+          {
+            "sceneId": "demo-ne-izleyin",
+            "notes": "Tek cümle söyleyin ve ekranı bırakın. İzlemenizi istediğim tek bir an var: ajanın durduğu ve sizden onay beklediği an. Çünkü bu sistemin zor kısmı düzeltmeyi bulmak değil, bulduktan sonra kendiliğinden uygulamamak. Sonra demoya geçin."
+          },
+          {
+            "sceneId": "kaynakca",
+            "notes": "Kapanış slaytı. Ekranda bırakıp soruları alın. Bütün rakamların birincil kaynağı repoda; slaytlar ve konuşmacı notları da orada, sunum günü yayında olacak. Hazırlarken kullanmadığım, çok dolaşan ama birincil kaynağı doğrulanamayan istatistiklerin gerekçeli listesi de aynı yerde."
+          }
+        ],
+        "slideSequences": [
+          {
+            "id": "ekosistem-detay",
+            "label": "Ekosistem: detaylı karşılaştırma",
+            "slides": [
+              {
+                "sceneId": "ekosistem-detay-tablo",
+                "notes": "Yalnızca soru gelirse açın. Olgunluk sütunu yirmi bir ağustos iki bin yirmi altı itibarıyla doğrulandı. En çok sorulan iki satır şunlar: dbt Developer Agent hâlâ preview, ve BigQuery ajanı GA olduğu hâlde pipeline'ı kendisi çalıştıramıyor, kullanıcı onayı şart."
+              }
+            ]
+          },
+          {
+            "id": "istatistik-hijyeni",
+            "label": "Kullanmadığım istatistikler",
+            "slides": [
+              {
+                "sceneId": "istatistik-hijyeni-liste",
+                "notes": "Bu slayt bir dipnot değil, bir yöntem beyanı. Her satır, hazırlık sırasında birincil kaynağını arayıp bulamadığım ya da yanlış aktarıldığını gördüğüm bir istatistik. En öğretici olanı IBM örneği: her yerde dolaşan yüzde elli bir alarm hiç incelenmiyor rakamı raporun içinde yok, rapor yüzde kırk dokuzuna ulaşılabiliyor diyor. Elli bir, yüzden kırk dokuzun çıkarılmışı. Kapanışta şunu söyleyin: bir istatistiğin çok tekrarlanması, doğrulanmış olmasıyla aynı şey değildir."
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+
     <div
-      id="root"
-      data-composition-id="main"
+      id="scene-root"
+      data-composition-id="root"
       data-start="0"
-      data-duration="10"
+      data-duration="360"
       data-width="1920"
       data-height="1080"
+      style="position: relative; width: 1920px; height: 1080px; overflow: hidden"
     >
-      
-      
+      <div id="deck-progress"></div>
 
-      <!--
-        Add your clips here. Example:
-        <div id="title" class="clip" data-start="0" data-duration="5" data-track-index="1"
-             style="font-size: 64px; color: #fff; padding: 40px">
-          Hello World
+    <!-- 01 ================================================== kapak -->
+    <div class="scene-frame" id="scene-kapak" data-composition-id="kapak" data-start="0" data-duration="10"
+         data-label="Kapak" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-kapak" data-start="0" data-duration="10" data-track-index="1">
+        <div class="pad center">
+          <div class="eyebrow" data-anim lang="en">Agentic Data Engineering</div>
+          <h1 data-anim>DataOps'u kuralla yönetmekten<br />ajanla yönetmeye</h1>
+          <p class="lede" data-anim>
+            Kuralın yetişemediği yerde ne oluyor, ajan orada tam olarak neyi değiştiriyor,
+            ve bunun bugün ölçülmüş karşılığı ne kadar?
+          </p>
+          <div class="kicker" data-anim>
+            45 dakika kavram, ardından 15 dakika çalışan sistem.
+          </div>
         </div>
-      -->
+      </section>
+    </div>
+
+    <!-- 02 =================================================== hook -->
+    <div class="scene-frame" id="scene-hook" data-composition-id="hook" data-start="10" data-duration="10"
+         data-label="Hook: yeşil pipeline" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-hook" data-start="10" data-duration="10" data-track-index="1">
+        <div class="slide-no">01</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Tanıdık gelen an</div>
+          <h2 data-anim>
+            Pipeline yeşil. Dashboard doluyor. Ve sorunu size<br />
+            <em>dışarıdan biri</em> söylüyor.
+          </h2>
+          <div class="cards c3" data-anim>
+            <div class="card accent">
+              <span class="k">Otomatik izleyici</span>
+              <p style="font-size: 54px; font-weight: 750; color: var(--text)">%55</p>
+              <p>Olayların yalnızca bu kadarını monitörler yakaladı.</p>
+            </div>
+            <div class="card">
+              <span class="k">Dış kullanıcı</span>
+              <p style="font-size: 54px; font-weight: 750; color: var(--text)">%29</p>
+              <p>Olayı ekibe müşteri ya da kullanıcı bildirdi.</p>
+            </div>
+            <div class="card">
+              <span class="k">Monitör yok</span>
+              <p style="font-size: 54px; font-weight: 750; color: var(--text)">%17</p>
+              <p>Olayın ilgili yerinde ya monitör ya telemetri yoktu.</p>
+            </div>
+          </div>
+        </div>
+        <div class="source">
+          <b>Ghosh, Shetty, Bansal, Nath, "How to Fight Production Incidents?", ACM SoCC '22.</b><br />
+          Microsoft Teams'in 152 yüksek şiddetli (sev 0/1/2) üretim olayının postmortem analizi.
+        </div>
+      </section>
+    </div>
+
+    <!-- 03 ========================================== bugun-kural -->
+    <div class="scene-frame" id="scene-bugun-kural" data-composition-id="bugun-kural" data-start="20" data-duration="10"
+         data-label="Bugün neyle yönetiyoruz" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-bugun-kural" data-start="20" data-duration="10" data-track-index="1">
+        <div class="slide-no">02</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Bölüm 1: Kuralın faturası</div>
+          <h2 data-anim>
+            Bugün veri güvenilirliğini tek bir mekanizmayla yönetiyoruz:
+            <em>birinin önceden yazdığı kurallar.</em>
+          </h2>
+          <div class="cards c4" data-anim>
+            <div class="card">
+              <span class="k">Doğrulama</span>
+              <h3>dbt testleri, contract'lar</h3>
+              <p>not_null, unique, accepted_values, şema sözleşmeleri.</p>
+            </div>
+            <div class="card">
+              <span class="k">İzleme</span>
+              <h3>Freshness ve volume monitörleri</h3>
+              <p>Eşik tabanlı: tablo geç mi geldi, satır sayısı saptı mı.</p>
+            </div>
+            <div class="card">
+              <span class="k">Dayanıklılık</span>
+              <h3>Airflow retry ve SLA</h3>
+              <p>Kaç kez dene, ne kadar bekle, kime haber ver.</p>
+            </div>
+            <div class="card">
+              <span class="k">Müdahale</span>
+              <h3>Alarm, runbook, on-call</h3>
+              <p>İnsan uyanır, runbook'u açar, adımları uygular.</p>
+            </div>
+          </div>
+          <div class="kicker" data-anim>
+            Bunların hepsi çalışan mühendislik. Buradaki sorun kalite değil, <b>kapsam</b>.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 04 ==================================== kuralin-varsayimi -->
+    <div class="scene-frame" id="scene-kuralin-varsayimi" data-composition-id="kuralin-varsayimi" data-start="30" data-duration="10"
+         data-label="Kural her zaman olaydan sonra yazılır" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-kuralin-varsayimi" data-start="30" data-duration="10" data-track-index="1">
+        <div class="slide-no">03</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Yapısal sınır</div>
+          <h2 data-anim>Her kural, bir kez yaşanmış bir arızanın anısıdır.</h2>
+          <div class="quote" data-anim>
+            "Handwritten code is added to the data pipeline <em>in retrospect</em>
+            to catch the observed type of errors in the future."
+            <cite>Redyuk, Kaoudi, Markl, Schelter, Automating Data Quality Validation, EDBT 2021</cite>
+          </div>
+          <div class="quote" data-anim style="border-left-color: var(--line)">
+            "We do not make any claims on completeness [...] there are reasonable
+            data properties that our schema cannot encode."
+            <cite>Google TFX, Data Validation for Machine Learning, MLSys 2019</cite>
+          </div>
+          <div class="kicker" data-anim>
+            Kuralları en büyük ölçekte işleten ekip, kural kümesinin
+            <b>eksiksiz olabileceği iddiasını kendisi reddediyor.</b>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 05 =============================================== gurultu -->
+    <div class="scene-frame" id="scene-gurultu" data-composition-id="gurultu" data-start="40" data-duration="10"
+         data-label="Ölçülmüş gürültü" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-gurultu" data-start="40" data-duration="10" data-track-index="1">
+        <div class="slide-no">04</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Üretimde ölçüldüğünde</div>
+          <h2 data-anim>Kural ve eşik tabanlı alarmların büyük çoğunluğu hiç çıkmamalıydı.</h2>
+          <div class="rows">
+            <div class="row frag" id="f-gurultu-1">
+              <div class="n">%90+</div>
+              <div class="t">
+                Alarmların bu kadarı "hiç çıkmamalıydı" olarak sınıflandı.
+                <span>Microsoft Lumos, KDD '20. Skype ve Teams KPI'ları, 4 aylık üretim ölçümü;
+                metrik bazında %90 ile %98,2 arasında.</span>
+              </div>
+            </div>
+            <div class="row frag" id="f-gurultu-2">
+              <div class="n">59.607</div>
+              <div class="t">
+                Tek bir sistemdeki aktif alarm kuralı sayısı.
+                <span>Tencent AlertGuardian, ASE '25. 200+ sistem genelinde toplam 200.000 kural.</span>
+              </div>
+            </div>
+            <div class="row frag" id="f-gurultu-3">
+              <div class="n">0</div>
+              <div class="t">
+                Bazı sistemler günde on binlerce alarm üretirken hiç arıza yaşamıyor.
+                <span>Aynı çalışma: "some systems generate tens of thousands of daily alerts
+                without experiencing any failures."</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="source">
+          Her iki bulgu da hakemli akademik çalışmaların üretim ölçümü. <span class="tag">satıcı anketi değil</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- 06 ======================================== kural-curumesi -->
+    <div class="scene-frame" id="scene-kural-curumesi" data-composition-id="kural-curumesi" data-start="50" data-duration="10"
+         data-label="Kural envanteri çürür" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-kural-curumesi" data-start="50" data-duration="10" data-track-index="1">
+        <div class="slide-no">05</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Görünmeyen maliyet</div>
+          <h2 data-anim>
+            Kural kümesi büyüdükçe bakımı, sağladığı korumadan
+            <em>daha hızlı büyüyor.</em>
+          </h2>
+          <div class="cards c3" data-anim>
+            <div class="card">
+              <span class="k">Bakım yükü</span>
+              <h3>Kural tabanlı monitörler ~%40 daha fazla dokunuş istiyor</h3>
+              <p>Custom SQL 2,35 ve statik doğrulama 2,03 güncelleme; anomali tespiti 1,33.</p>
+            </div>
+            <div class="card">
+              <span class="k">Etkileşim çöküşü</span>
+              <h3>Haftada 50 alarmı geçen kanalda ilgi %15 düşüyor</h3>
+              <p>100 alarmı geçince %20 daha. Alarm sayısı arttıkça okunma oranı düşüyor.</p>
+            </div>
+            <div class="card">
+              <span class="k">CI tarafında aynı olgu</span>
+              <h3>Testlerin yalnızca %1,23'ü ömrü boyunca bir kırılma buldu</h3>
+              <p>Koşan testlerin %99'undan fazlası geçiyor ya da flake veriyor.</p>
+            </div>
+          </div>
+          <div class="quote" data-anim style="margin-top: 44px; font-size: 38px">
+            "A simple rule-based approach with human knowledge is insufficient in practice
+            as it can be easily overwhelmed by a massive number of complex and
+            ever-changing rules."
+            <cite>Microsoft Azure, Warden, USENIX ATC '21. 26 Azure servisi, 18 ay, 10M+ alarm.</cite>
+          </div>
+        </div>
+        <div class="source">
+          Monte Carlo platform telemetrisi, 11M+ tablo, Haz 2026 <span class="tag warn">satıcı telemetrisi</span>
+          &nbsp;·&nbsp; Google, ICSE-SEIP '17 ve ICST '17.
+        </div>
+      </section>
+    </div>
+
+    <!-- 07 ============================================= kok-neden -->
+    <div class="scene-frame" id="scene-kok-neden" data-composition-id="kok-neden" data-start="60" data-duration="10"
+         data-label="Kök neden dağılımı" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-kok-neden" data-start="60" data-duration="10" data-track-index="1">
+        <div class="slide-no">06</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Veri olayları gerçekte nereden geliyor</div>
+          <h2 class="tight" data-anim>
+            Ve olayların yaklaşık <em>üçte biri</em> aslında olay bile değil.
+          </h2>
+          <div class="cards c3" data-anim style="margin-top: 46px">
+            <div class="card">
+              <span class="k">Kök neden dağılımı</span>
+              <p style="line-height: 1.9; font-size: 26px">
+                Pipeline çalıştırma hataları <b style="color: var(--text)">%26,2</b><br />
+                Gerçek dünya değişimi <b style="color: var(--text)">%20,0</b><br />
+                Ingestion kesintileri <b style="color: var(--text)">%16,6</b><br />
+                Platform kararsızlığı <b style="color: var(--text)">%15,2</b><br />
+                Kasıtlı değişiklikler <b style="color: var(--text)">%14,2</b><br />
+                <span style="color: var(--accent)">Şema kayması <b>%7,8</b></span>
+              </p>
+            </div>
+            <div class="card accent">
+              <span class="k">Olay olmayan olaylar</span>
+              <p style="font-size: 92px; font-weight: 800; color: var(--accent); line-height: 1">%34</p>
+              <p style="margin-top: 14px">
+                Gerçek dünya değişimi ve kasıtlı değişiklikler toplamı. Ekip bunları
+                da bir olay gibi kovalıyor.
+              </p>
+            </div>
+            <div class="card">
+              <span class="k">Demoya dair dürüstlük</span>
+              <h3>Birazdan göreceğiniz demo şema kayması kullanıyor</h3>
+              <p>
+                Yani en yaygın sınıfı değil, en temiz gösterilebilir olanı. Onaltıda birlik
+                bir dilim üzerinden bütün kategoriyi savunmuyorum.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="source">
+          Monte Carlo Troubleshooting Agent telemetrisi, yüzlerce müşteri ortamında binlerce koşu, Haz 2026.
+          <span class="tag warn">satıcı telemetrisi</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- 08 ======================================== insan-faturasi -->
+    <div class="scene-frame" id="scene-insan-faturasi" data-composition-id="insan-faturasi" data-start="70" data-duration="10"
+         data-label="Faturanın insan tarafı" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-insan-faturasi" data-start="70" data-duration="10" data-track-index="1">
+        <div class="slide-no">07</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Faturayı kim ödüyor</div>
+          <h2 data-anim>Fatura sistemin değil, nöbetteki insanın üstünde birikiyor.</h2>
+          <div class="stat-row" data-anim>
+            <div>
+              <div class="stat sm">67</div>
+              <div class="stat-unit">olay / ay<br />ortalama veri ekibi başına</div>
+            </div>
+            <div>
+              <div class="stat sm">15 sa</div>
+              <div class="stat-unit">olay başına ortalama<br />çözüm süresi</div>
+            </div>
+            <div>
+              <div class="stat sm">%74</div>
+              <div class="stat-unit">sorunu iş tarafı<br />veri ekibinden önce fark ediyor</div>
+            </div>
+          </div>
+          <div class="kicker" data-anim>
+            Ayrıca SRE tarafında toil medyanı <b>%20</b>, operasyon işi medyanı <b>%30</b>.
+            Yani mesainin üçte biri sistemi ilerletmeye değil, ayakta tutmaya gidiyor.
+          </div>
+        </div>
+        <div class="source">
+          Monte Carlo / Wakefield Research, n=200, Mart 2023 <span class="tag warn">satıcı anketi</span>
+          &nbsp;·&nbsp; Catchpoint SRE Report 2025, n=301, saha Tem-Ağu 2024
+          <span class="tag warn">satıcı anketi</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- 09 ======================================= durustluk-freni -->
+    <div class="scene-frame" id="scene-durustluk-freni" data-composition-id="durustluk-freni" data-start="80" data-duration="10"
+         data-label="Dürüstlük freni" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-durustluk-freni" data-start="80" data-duration="10" data-track-index="1">
+        <div class="slide-no">08</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Kendi kaynaklarıma fren</div>
+          <h2 data-anim>Satıcı anketi, soruyu kendi cevabına göre sorar.</h2>
+          <div class="compare" data-anim>
+            <div class="col now">
+              <h3>Satıcı anketleri</h3>
+              <ul>
+                <li>Alarm yorgunluğu felaket boyutunda görünüyor</li>
+                <li>Sorular çözümün var olduğu yeri işaret ediyor</li>
+                <li>Örneklem, o çözümü satın alabilecek kurumlardan</li>
+              </ul>
+            </div>
+            <div class="col next" style="border-color: #2a3543; background: var(--panel)">
+              <h3 style="color: var(--muted)">SANS 2024, satıcı değil, n=403</h3>
+              <ul>
+                <li style="font-size: 34px">
+                  "Bakamadığımız kadar çok alarm" diyerek bunu en büyük engel seçenler:
+                  <b style="color: var(--accent); font-size: 44px">%4,6</b>
+                </li>
+                <li>En büyük engel olarak seçilen: otomasyon eksikliği ve personel</li>
+              </ul>
+            </div>
+          </div>
+          <div class="kicker" data-anim>
+            Bölümün tezi: sorun kuralların yanlış olması değil.
+            <b>Kuralın kapsayamadığı alanın, kural yazma hızınızdan hızlı büyümesi.</b>
+          </div>
+        </div>
+        <div class="source">
+          SANS 2024 SOC Survey, n=403 (bitişik alandan aktarım: güvenlik operasyonları verisi, veri pipeline'ı değil).
+        </div>
+      </section>
+    </div>
+
+    <!-- 10 ============================================== uc-evre -->
+    <div class="scene-frame" id="scene-uc-evre" data-composition-id="uc-evre" data-start="90" data-duration="10"
+         data-label="Üç evre" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-uc-evre" data-start="90" data-duration="10" data-track-index="1">
+        <div class="slide-no">09</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Bölüm 2: Paradigma kayması</div>
+          <h2 data-anim>Otomasyon eli, asistan klavyeyi, ajan <em>karar döngüsünü</em> devraldı.</h2>
+          <div class="cards c3" data-anim>
+            <div class="card">
+              <span class="k">2018 - 2021</span>
+              <h3>Otomasyon</h3>
+              <p>Low-code araçlar manuel script'lerin yerini aldı. Ne yapılacağına hâlâ insan karar veriyor.</p>
+            </div>
+            <div class="card">
+              <span class="k">2022 - 2024</span>
+              <h3>Asistanlık</h3>
+              <p>Copilot'lar SQL ve dokümantasyon yazımını hızlandırdı. Direksiyon insanda.</p>
+            </div>
+            <div class="card accent">
+              <span class="k">2025 →</span>
+              <h3>Otonomi</h3>
+              <p>Ajan hedefi alır, adımları planlar, çalıştırır ve kendi işini doğrular. Karar döngüsünün bir kısmı devredilir.</p>
+            </div>
+          </div>
+          <div class="kicker" data-anim>
+            Üçüncü evre yeni, ve bu sunumun sonraki yarısı büyük ölçüde
+            <b>ne kadar yeni olduğu</b> üzerine.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 11 ========================================= copilot-ajan -->
+    <div class="scene-frame" id="scene-copilot-ajan" data-composition-id="copilot-ajan" data-start="100" data-duration="10"
+         data-label="Copilot ve ajan farkı" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-copilot-ajan" data-start="100" data-duration="10" data-track-index="1">
+        <div class="slide-no">10</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Tek cümlelik fark</div>
+          <h2 data-anim>
+            Copilot "şunu yazabilirsin" der. Ajan <em>"şunu yaptım, onaylıyor musun"</em> der.
+          </h2>
+          <div class="compare" data-anim>
+            <div class="col now">
+              <h3>Copilot / asistan</h3>
+              <ul>
+                <li>Satır satır öneri sunar</li>
+                <li>Bağlamı siz taşırsınız</li>
+                <li>Çalıştırmaz, doğrulamaz</li>
+                <li>Hata sizin hatanızdır, çünkü siz yazdınız</li>
+              </ul>
+            </div>
+            <div class="col next">
+              <h3>Ajan</h3>
+              <ul>
+                <li>Üst düzey bir hedefi kabul eder</li>
+                <li>Bağlamı kendi toplar: şema, log, lineage</li>
+                <li>Araç çağırır, çalıştırır, kendi işini doğrular</li>
+                <li>Hata sizin onayınızdır, çünkü siz onayladınız</li>
+              </ul>
+            </div>
+          </div>
+          <div class="kicker" data-anim>
+            Bu bir hız farkı değil, <b>sorumluluğun yer değiştirmesi.</b>
+            Guardrail bölümünün tamamı bu cümlenin üzerine oturuyor.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 12 ========================================= niyet-odakli -->
+    <div class="scene-frame" id="scene-niyet-odakli" data-composition-id="niyet-odakli" data-start="110" data-duration="10"
+         data-label="Niyet odaklı mühendislik" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-niyet-odakli" data-start="110" data-duration="10" data-track-index="1">
+        <div class="slide-no">11</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Niyet odaklı mühendislik</div>
+          <h2 data-anim>Siz "ne" olduğunu yazarsınız, "nasıl"ı ajan çözer, diff'i yine siz onaylarsınız.</h2>
+          <div class="quote" data-anim style="font-family: 'JetBrains Mono', monospace; font-size: 36px">
+            "Stripe abonelik olaylarını depoya al, event ID'ye göre tekilleştir,
+            tarihe göre partition'la."
+            <cite>Bu bir şartname. Kod değil, ve pseudo-kod da değil.</cite>
+          </div>
+          <div class="kicker" data-anim>
+            Zihinsel model: <b>makine hızında çalışan ve test yazmayı asla unutmayan bir junior
+            mühendisin pull request'ini incelemek.</b> Hızlıdır, çok iş yapar, ve sınırlara ihtiyacı vardır.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 13 ========================================== neden-simdi -->
+    <div class="scene-frame" id="scene-neden-simdi" data-composition-id="neden-simdi" data-start="120" data-duration="10"
+         data-label="Neden şimdi" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-neden-simdi" data-start="120" data-duration="10" data-track-index="1">
+        <div class="slide-no">12</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Neden tam şimdi</div>
+          <h2 data-anim>Dört şey aynı anda olgunlaştı, ve dördüncüsü bir boşluğa işaret ediyor.</h2>
+          <div class="rows">
+            <div class="row frag" id="f-simdi-1">
+              <div class="n">01</div>
+              <div class="t">
+                Modeller artık araç çağırıyor, sadece metin üretmiyor.
+                <span>Kod üretimi, çok adımlı akıl yürütme ve yapılandırılmış araç çağrısı aynı modelde birleşti.</span>
+              </div>
+            </div>
+            <div class="row frag" id="f-simdi-2">
+              <div class="n">02</div>
+              <div class="t">
+                Ajan çerçeveleri 1.0 seviyesine geldi.
+                <span>LangGraph 1.0 (Eki 2025), Microsoft Agent Framework 1.0 (Nis 2026), LlamaIndex Workflows.</span>
+              </div>
+            </div>
+            <div class="row frag" id="f-simdi-3">
+              <div class="n">03</div>
+              <div class="t">
+                MCP bir satıcı özelliği olmaktan çıkıp standart oldu.
+                <span>Anthropic, Aralık 2025'te MCP'yi Linux Foundation altındaki Agentic AI Foundation'a bağışladı;
+                en kapsamlı spesifikasyon revizyonu Temmuz 2026.</span>
+              </div>
+            </div>
+            <div class="row frag" id="f-simdi-4">
+              <div class="n">04</div>
+              <div class="t">
+                Ve talep, tam da bu sunumun konusu olan yerde karşılıksız duruyor.
+                <span>dbt Labs 2026 anketi (n=363, Nis 2026): ekiplerin <b style="color: var(--accent)">%72'si</b>
+                AI destekli kod yazmayı önceliklendiriyor, ama yalnızca
+                <b style="color: var(--accent)">%24'ü</b> AI destekli pipeline yönetimini.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="source">
+          Ayrıca dbt'nin "zamanının çoğunu veri setlerini bakım ve organizasyona harcıyorum" oranı,
+          AI kullanımı %30'dan %80'e çıktığı hâlde <b>%57'de sabit kaldı.</b>
+        </div>
+      </section>
+    </div>
+
+    <!-- 14 ======================================== ajan-dongusu -->
+    <div class="scene-frame" id="scene-ajan-dongusu" data-composition-id="ajan-dongusu" data-start="130" data-duration="10"
+         data-label="Ajan döngüsü diyagramı" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-ajan-dongusu" data-start="130" data-duration="10" data-track-index="1">
+        <div class="slide-no">13</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Bölüm 3: Bir veri ajanı neyden yapılır</div>
+          <h2 class="tight" data-anim>
+            Ajan düşünen bir program değil; çıkış koşulu modelin
+            <em>araç çağırmayı bırakması</em> olan bir döngüdür.
+          </h2>
+          <svg data-anim viewBox="0 0 1620 470" width="1620" height="470"
+               style="margin-top: 30px" aria-label="Ajan dongusu">
+            <defs>
+              <marker id="ah" markerWidth="11" markerHeight="11" refX="9" refY="5.5"
+                      orient="auto" markerUnits="userSpaceOnUse">
+                <path d="M0,1 L10,5.5 L0,10 z" fill="#ffb020" />
+              </marker>
+              <marker id="ahd" markerWidth="11" markerHeight="11" refX="9" refY="5.5"
+                      orient="auto" markerUnits="userSpaceOnUse">
+                <path d="M0,1 L10,5.5 L0,10 z" fill="#5d6b7d" />
+              </marker>
+            </defs>
+
+            <!-- loop nodes -->
+            <g font-family="Inter, sans-serif">
+              <rect x="20" y="20" width="330" height="94" rx="12" fill="#161d28" stroke="#2a3543" />
+              <text x="185" y="60" fill="#e9eef5" font-size="29" font-weight="650" text-anchor="middle">Model akıl yürütür</text>
+              <text x="185" y="92" fill="#93a1b3" font-size="22" text-anchor="middle">"şimdi neyi bilmem gerek?"</text>
+
+              <rect x="480" y="20" width="330" height="94" rx="12" fill="#161d28" stroke="#2a3543" />
+              <text x="645" y="60" fill="#e9eef5" font-size="29" font-weight="650" text-anchor="middle">Araç çağrısı seçer</text>
+              <text x="645" y="92" fill="#93a1b3" font-size="22" text-anchor="middle">ad + argümanlar</text>
+
+              <rect x="480" y="240" width="330" height="94" rx="12" fill="#161d28" stroke="#2a3543" />
+              <text x="645" y="280" fill="#e9eef5" font-size="29" font-weight="650" text-anchor="middle">Araç çalışır</text>
+              <text x="645" y="312" fill="#93a1b3" font-size="22" text-anchor="middle">model değil, sizin kodunuz</text>
+
+              <rect x="20" y="240" width="330" height="94" rx="12" fill="#161d28" stroke="#2a3543" />
+              <text x="185" y="280" fill="#e9eef5" font-size="29" font-weight="650" text-anchor="middle">Sonuç bağlama girer</text>
+              <text x="185" y="312" fill="#93a1b3" font-size="22" text-anchor="middle">gözlem</text>
+            </g>
+
+            <!-- loop arrows -->
+            <path d="M350,67 L470,67" stroke="#ffb020" stroke-width="2.5" fill="none" marker-end="url(#ah)" />
+            <path d="M645,114 L645,230" stroke="#ffb020" stroke-width="2.5" fill="none" marker-end="url(#ah)" />
+            <path d="M480,287 L360,287" stroke="#ffb020" stroke-width="2.5" fill="none" marker-end="url(#ah)" />
+            <path d="M185,240 L185,124" stroke="#ffb020" stroke-width="2.5" fill="none" marker-end="url(#ah)" />
+
+            <!-- tools box -->
+            <rect x="20" y="382" width="790" height="72" rx="10" fill="#0d1117"
+                  stroke="#4a3a14" stroke-dasharray="6 5" />
+            <text x="46" y="416" fill="#ffb020" font-family="'JetBrains Mono', monospace"
+                  font-size="21" letter-spacing="1.6">ARAÇLAR = SİZİN KODUNUZ</text>
+            <text x="46" y="443" fill="#93a1b3" font-family="'JetBrains Mono', monospace" font-size="22">
+              Postgres istemcisi · Airflow API · dbt CLI · katalog / lineage · dosya yazma
+            </text>
+            <path d="M645,334 L645,378" stroke="#5d6b7d" stroke-width="2" stroke-dasharray="5 4"
+                  fill="none" marker-end="url(#ahd)" />
+
+            <!-- exits -->
+            <line x1="880" y1="20" x2="880" y2="454" stroke="#202a38" stroke-width="1.5" />
+            <text x="930" y="42" fill="#5d6b7d" font-family="'JetBrains Mono', monospace"
+                  font-size="21" letter-spacing="1.8">DÖRT MEŞRU ÇIKIŞ</text>
+            <g font-family="Inter, sans-serif">
+              <rect x="930" y="66" width="660" height="82" rx="10" fill="#12171f" stroke="#202a38" />
+              <text x="958" y="100" fill="#e9eef5" font-size="27" font-weight="600">Model araç çağırmayı bırakır</text>
+              <text x="958" y="130" fill="#93a1b3" font-size="21">Doğal duruş. İşin bittiğini kendi söyler.</text>
+
+              <rect x="930" y="164" width="660" height="82" rx="10" fill="#12171f" stroke="#4a3a14" />
+              <text x="958" y="198" fill="#ffb020" font-size="27" font-weight="600">Doğrulayıcı yeşil yanar</text>
+              <text x="958" y="228" fill="#93a1b3" font-size="21">Derleme geçti. En güvenilir çıkış bu.</text>
+
+              <rect x="930" y="262" width="660" height="82" rx="10" fill="#12171f" stroke="#202a38" />
+              <text x="958" y="296" fill="#e9eef5" font-size="27" font-weight="600">Bütçe biter</text>
+              <text x="958" y="326" fill="#93a1b3" font-size="21">Adım, token ya da süre sınırı. Sonsuz döngü freni.</text>
+
+              <rect x="930" y="360" width="660" height="82" rx="10" fill="#12171f" stroke="#202a38" />
+              <text x="958" y="394" fill="#e9eef5" font-size="27" font-weight="600">İnsan kapısı</text>
+              <text x="958" y="424" fill="#93a1b3" font-size="21">Ajan durur ve onay bekler. Demoda göreceğiniz an.</text>
+            </g>
+          </svg>
+        </div>
+      </section>
+    </div>
+
+    <!-- 15 =========================================== grounding -->
+    <div class="scene-frame" id="scene-grounding" data-composition-id="grounding" data-start="140" data-duration="10"
+         data-label="Grounding" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-grounding" data-start="140" data-duration="10" data-track-index="1">
+        <div class="slide-no">14</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Grounding ve bağlam mühendisliği</div>
+          <h2 data-anim>
+            Halüsinasyon bir model arızası değil;
+            <em>boş bırakılmış bir bağlam alanının doldurulmasıdır.</em>
+          </h2>
+          <p class="lede" data-anim>
+            Model şemayı bilmiyorsa uydurmaz. <strong>En olası şemayı yazar.</strong>
+            Ve en olası şema çoğu zaman sizinkine çok benzer, bu yüzden hata gözden kaçar.
+          </p>
+          <div class="cards c4" data-anim>
+            <div class="card">
+              <span class="k">Canlı şema</span>
+              <p>Kaynağın şu andaki hâli. Kod ne diyorsa değil, veritabanı ne diyorsa.</p>
+            </div>
+            <div class="card">
+              <span class="k">Lineage</span>
+              <p>dbt manifest, bağımlılık grafiği. Neyin neyi kırdığını buradan okur.</p>
+            </div>
+            <div class="card">
+              <span class="k">Çalıştırma logları</span>
+              <p>Hata mesajının kendisi. Tahmin değil, kanıt.</p>
+            </div>
+            <div class="card">
+              <span class="k">Katalog metadata</span>
+              <p>Sertifikasyon, glossary, erişim politikası. Ajanın neye dokunabileceği.</p>
+            </div>
+          </div>
+          <div class="kicker" data-anim>
+            Çözüm daha akıllı model değil, <b>daha dolu bağlam.</b>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 16 ===================================== self-correction -->
+    <div class="scene-frame" id="scene-self-correction" data-composition-id="self-correction" data-start="150" data-duration="10"
+         data-label="Kendi kendini düzeltme" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-self-correction" data-start="150" data-duration="10" data-track-index="1">
+        <div class="slide-no">15</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Kendi kendini düzeltme</div>
+          <h2 data-anim>
+            Ajanın gücü yazdığı koddan değil, o kodu
+            <em>ucuza yanlışlayabilen doğrulayıcısından</em> gelir.
+          </h2>
+          <div class="cards c2" data-anim>
+            <div class="card accent">
+              <span class="k">Döngü</span>
+              <p style="font-family: 'JetBrains Mono', monospace; font-size: 30px; line-height: 1.85; color: var(--text)">
+                üret → <b style="color: var(--accent)">doğrula</b> → hatayı oku → yeniden üret
+              </p>
+              <p style="margin-top: 20px">
+                Doğrulayıcı ucuz ve deterministik olmalı: <code>dbt compile</code>, SQL parse,
+                test koşusu. Pahalıysa ajan onu yeterince sık çalıştıramaz.
+              </p>
+            </div>
+            <div class="card">
+              <span class="k">Doğrulayıcı seçimi bir detay değil</span>
+              <h3>Yanlış doğrulayıcı size yeşil ışık verir</h3>
+              <p>
+                Demodaki sistem önce yalnızca SQL parse etmeyi denedi. Ama var olmayan bir
+                kolonu okuyan bir view <b style="color: var(--text)">tertemiz parse eder.</b>
+                Bu yüzden doğrulayıcı gerçek derlemeye yükseltildi.
+              </p>
+            </div>
+          </div>
+          <div class="kicker" data-anim>
+            Pratik karşılığı: <b><code>dbt compile</code>'ınız yoksa, ajanınız da yoktur.</b>
+            Ajan projesine başlamadan önce doğrulayıcınıza bakın.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 17 ============================================== hafiza -->
+    <div class="scene-frame" id="scene-hafiza" data-composition-id="hafiza" data-start="160" data-duration="10"
+         data-label="Hafıza" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-hafiza" data-start="160" data-duration="10" data-track-index="1">
+        <div class="slide-no">16</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Hafıza</div>
+          <h2 data-anim>Hafıza ajanı hızlandırır ve <em>tam olarak aynı oranda eskitir.</em></h2>
+          <p class="lede" data-anim>
+            Dün doğru olan cevabı, bugün değişmiş bir sistem hakkında aynı özgüvenle tekrarlar.
+            Ve hatırlayan bir ajanın yanılgısı, hatırlamayanınkinden daha ikna edicidir.
+          </p>
+          <div class="cards c2" data-anim>
+            <div class="card">
+              <span class="k">Ölçülmüş çürüme</span>
+              <h3>%95 → ~%65, tek bir ayda</h3>
+              <p>
+                Anthropic'in kendi iç analitik ajanında, bakımsız bırakılan bağlam katmanı
+                doğruluğu bir ay içinde bu kadar düşürdü.
+                <span class="tag warn">birinci taraf kaynak</span>
+              </p>
+            </div>
+            <div class="card">
+              <span class="k">Demodaki tercih</span>
+              <h3>Hafıza bilerek yok</h3>
+              <p>
+                Her olay sıfırdan teşhis ediliyor: önceki sonucu yeniden kullanmak yerine
+                transformation'ı yeniden okuyup canlı kaynağı yeniden inceliyor. Güvenli varsayılan bu.
+              </p>
+            </div>
+          </div>
+          <div class="kicker" data-anim>
+            Hafıza gerçek ve iyi anlaşılmış bir genişleme. Ama <b>bakımı olmayan hafıza,
+            hafıza değil, eskimiş bir önyargıdır.</b>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 18 =========================================== planlama -->
+    <div class="scene-frame" id="scene-planlama" data-composition-id="planlama" data-start="170" data-duration="10"
+         data-label="Planlama mı, sabit graf mı" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-planlama" data-start="170" data-duration="10" data-track-index="1">
+        <div class="slide-no">17</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Planlama mı, sabit graf mı</div>
+          <h2 data-anim>
+            Doğru soru "gerçekten plan yapıyor mu" değil;
+            <em>"planı yanlış çıkarsa neye dokunabilir".</em>
+          </h2>
+          <div class="compare" data-anim>
+            <div class="col now">
+              <h3>Planlayıcı</h3>
+              <ul>
+                <li>Ne yapılacağına kendisi karar verir</li>
+                <li>Adım sırası çalışma zamanında oluşur</li>
+                <li>Yeni durumlara uyum sağlar</li>
+                <li>Hasar yarıçapı: <b style="color: var(--bad)">geniş ve önceden bilinemez</b></li>
+              </ul>
+            </div>
+            <div class="col next">
+              <h3>Uygulayıcı: sabit graf</h3>
+              <ul>
+                <li>Bilinen bir problemin neye ihtiyacı olduğunu çözer</li>
+                <li>Adımlar önceden yazılmış bir graftan geçer</li>
+                <li>Her düğümde araç izni ayrı ayrı verilir</li>
+                <li>Hasar yarıçapı: <b style="color: var(--good)">dar ve denetlenebilir</b></li>
+              </ul>
+            </div>
+          </div>
+          <div class="kicker" data-anim>
+            Otonomi bir övgü değil, <b>bir hasar yarıçapı ölçüsüdür.</b>
+            Demodaki sistem bilerek uygulayıcı yarısında duruyor.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 19 ================================== gozlemlenebilirlik -->
+    <div class="scene-frame" id="scene-gozlemlenebilirlik" data-composition-id="gozlemlenebilirlik" data-start="180" data-duration="10"
+         data-label="Gözlemlenebilirlik ve eval" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-gozlemlenebilirlik" data-start="180" data-duration="10" data-track-index="1">
+        <div class="slide-no">18</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Gözlemlenebilirlik ve değerlendirme</div>
+          <h2 class="tight" data-anim>
+            Trace'i olmayan ajan hata ayıklanamaz. Eval'i olmayan ajan iyileştirilemez.
+            İkisi de yoksa elinizde bir sistem değil, <em>iyi giden bir demo</em> vardır.
+          </h2>
+          <div class="cards c2" data-anim>
+            <div class="card">
+              <span class="k">Trace neyi kaydeder</span>
+              <p style="line-height: 1.75">
+                Her LLM çağrısı ve her araç çağrısı bir span. Girdi, çıktı, token, gecikme,
+                hata. Bir olayın tamamı tek bir ağaç olarak yeniden okunabilir.
+              </p>
+              <p style="margin-top: 16px; color: var(--dim)">
+                OpenTelemetry'nin GenAI ajan span'ları hâlâ Development kararlılığında;
+                bu alan henüz standartlaşma sürecinde.
+              </p>
+            </div>
+            <div class="card accent">
+              <span class="k">Kendi hatamızdan bir ders</span>
+              <h3>Senaryo geçiyordu, ajan her geçişte 90 saniye takılıyordu</h3>
+              <p>
+                Spesifikasyon takılmayı açıkça yasaklıyordu. Test yeşildi. Çünkü test
+                <b style="color: var(--text)">"ajan hayatta kaldı mı"</b> diye soruyordu,
+                <b style="color: var(--text)">"ne kadar sürdü"</b> diye değil.
+              </p>
+            </div>
+          </div>
+          <div class="kicker" data-anim>
+            <b>Eval'iniz, sorduğunuz soru kadar iyidir.</b>
+            Bir spec'in doğru olması, kontrol edildiği anlamına gelmez.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 20 ========================================= determinizm -->
+    <div class="scene-frame" id="scene-determinizm" data-composition-id="determinizm" data-start="190" data-duration="10"
+         data-label="Determinizm sınırı" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-determinizm" data-start="190" data-duration="10" data-track-index="1">
+        <div class="slide-no">19</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Determinizm sınırı</div>
+          <h2 data-anim>
+            Aynı girdiye aynı çıktıyı vermeyen bir sistemi çıktısıyla test edemezsiniz.
+            <em>Değişmezleriyle test edersiniz.</em>
+          </h2>
+          <div class="cards c4" data-anim>
+            <div class="card">
+              <span class="k">Değişmez 1</span>
+              <p>Onaysız hiçbir yazma gerçekleşmez.</p>
+            </div>
+            <div class="card">
+              <span class="k">Değişmez 2</span>
+              <p>Derlenmeyen hiçbir aday insana sunulmaz.</p>
+            </div>
+            <div class="card">
+              <span class="k">Değişmez 3</span>
+              <p>Bütçe aşılmaz; döngü her koşulda sonlanır.</p>
+            </div>
+            <div class="card">
+              <span class="k">Değişmez 4</span>
+              <p>Her koşu iz bırakır; hiçbir karar sessiz değildir.</p>
+            </div>
+          </div>
+          <div class="kicker" data-anim>
+            Dördü de <b>modelin ne cevap verdiğinden bağımsız olarak</b> doğrulanabilir.
+            Bu yüzden ajanın testi, modelin testi değildir.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 21 ========================================= hype-cycle -->
+    <div class="scene-frame" id="scene-hype-cycle" data-composition-id="hype-cycle" data-start="200" data-duration="10"
+         data-label="Piyasa nerede duruyor" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-hype-cycle" data-start="200" data-duration="10" data-track-index="1">
+        <div class="slide-no">20</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Bölüm 4: Riskler ve guardrail'lar</div>
+          <h2 data-anim>
+            Gartner'ın ilk bağımsız Agentic AI Hype Cycle'ı Nisan 2026'da çıktı.
+            Teknoloji <em>tam tepede.</em>
+          </h2>
+          <div class="cards c4" data-anim>
+            <div class="card accent">
+              <span class="k">Konum</span>
+              <h3>Peak of Inflated Expectations</h3>
+              <p>Beklentinin zirvesi. Henüz hayal kırıklığı çukuruna inilmedi.</p>
+            </div>
+            <div class="card">
+              <span class="k">Öngörü</span>
+              <h3>%40+ iptal</h3>
+              <p>Agentic AI projelerinin bu kadarı 2027 sonuna kadar iptal edilecek. Öngörü geri çekilmedi.</p>
+            </div>
+            <div class="card">
+              <span class="k">Agent washing</span>
+              <h3>~130 gerçek satıcı</h3>
+              <p>Binlerce "agentic AI" satıcısı içinden gerçek olduğu tahmin edilen sayı.</p>
+            </div>
+            <div class="card">
+              <span class="k">Benimseme</span>
+              <h3>%17 dağıtmış</h3>
+              <p>2026 CIO anketi. Çoğunluk hâlâ pilot ve keşif aşamasında.</p>
+            </div>
+          </div>
+          <div class="kicker" data-anim>
+            Kritik nüans: iptal sebepleri model yetersizliği değil.
+            <b>Maliyet, belirsiz iş değeri ve zayıf risk kontrolü.</b>
+            Yani hepsi düzeltilebilir yönetim problemleri.
+          </div>
+        </div>
+        <div class="source">
+          Gartner, 25 Haz 2025 basın açıklaması ve 2 Nis 2026 Hype Cycle for Agentic AI.
+        </div>
+      </section>
+    </div>
+
+    <!-- 22 =================================== olculmus-sonuclar -->
+    <div class="scene-frame" id="scene-olculmus-sonuclar" data-composition-id="olculmus-sonuclar" data-start="210" data-duration="10"
+         data-label="Ölçülmüş sonuçlar" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-olculmus-sonuclar" data-start="210" data-duration="10" data-track-index="1">
+        <div class="slide-no">21</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Yayınlanmış ölçümler</div>
+          <h2 data-anim>En dürüst rakamlar "harika" demiyor. <em>"İşe yarıyor, ama yarısı"</em> diyor.</h2>
+          <div class="rows">
+            <div class="row frag" id="f-sonuc-1">
+              <div class="n">%53</div>
+              <div class="t">
+                LinkedIn SQL Bot: yanıtların yalnızca %53'ü teknik olarak doğru, ama
+                kullanıcıların %95'i geçer notu veriyor.
+                <span>Ve en çok kullanılan özellik sorgu üretimi değil: sorgu patlayınca çıkan
+                "Fix with AI" butonu, oturumların <b style="color: var(--accent)">%80'i</b>.
+                Yani değer sıfırdan yazmakta değil, kırılanı onarmakta.</span>
+              </div>
+            </div>
+            <div class="row frag" id="f-sonuc-2">
+              <div class="n">2×</div>
+              <div class="t">
+                Pinterest text-to-SQL: ilk seferde kabul oranı %20'den %40'ın üzerine çıktı.
+                <span>İkiye katlandı, ve hâlâ yarısından azı ilk seferde kabul ediliyor.
+                İnsan incelemesi ortadan kalkmıyor, ucuzluyor.</span>
+              </div>
+            </div>
+            <div class="row frag" id="f-sonuc-3">
+              <div class="n">%32</div>
+              <div class="t">
+                ELT-Bench: ajanların dönüşüm başarısı önce %3,9 göründü.
+                <span>Sonra ELT-Bench-Verified, başarısız görevlerin %82,7'sinde hatanın
+                <b style="color: var(--text)">benchmark'ın kendisinde</b> olduğunu buldu; düzeltilince %32,51.
+                Yani gerçek yetenek sanılandan yüksek, ama hâlâ üçte bir.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="source">
+          LinkedIn: KDD '25 workshop bildirisi (arXiv 2507.14372) · Pinterest mühendislik blogu ·
+          ELT-Bench-Verified (arXiv 2603.29399, Mar 2026).
+        </div>
+      </section>
+    </div>
+
+    <!-- 23 ================================================ metr -->
+    <div class="scene-frame" id="scene-metr" data-composition-id="metr" data-start="220" data-duration="10"
+         data-label="METR randomize deneyi" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-metr" data-start="220" data-duration="10" data-track-index="1">
+        <div class="slide-no">22</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>En rahatsız edici bulgu</div>
+          <h2 data-anim>
+            Alandaki tek randomize kontrollü deney, deneyimli geliştiricilerin AI ile
+            <em>%19 daha yavaş</em> olduğunu buldu.
+          </h2>
+          <div class="stat-row" data-anim>
+            <div>
+              <div class="stat">%19</div>
+              <div class="stat-unit">ölçülen<br />yavaşlama</div>
+            </div>
+            <div>
+              <div class="stat" style="color: var(--muted)">%20</div>
+              <div class="stat-unit">aynı geliştiricilerin<br />sandığı hızlanma</div>
+            </div>
+          </div>
+          <div class="kicker" data-anim>
+            Bu, "ajan kullanmayın" demek değil.
+            <b>Kendi algıladığınız kazancı kanıt sanmayın</b> demek.
+            Sezgi burada sistematik olarak yanılıyor, ve yanılma yönü hep aynı: iyimser.
+          </div>
+        </div>
+        <div class="source">
+          METR, randomize kontrollü deney, arXiv 2507.09089. Deneyimli açık kaynak
+          geliştiricileri, kendi depolarındaki gerçek görevler.
+        </div>
+      </section>
+    </div>
+
+    <!-- 24 =========================================== bes-risk -->
+    <div class="scene-frame" id="scene-bes-risk" data-composition-id="bes-risk" data-start="230" data-duration="10"
+         data-label="Beş risk" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-bes-risk" data-start="230" data-duration="10" data-track-index="1">
+        <div class="slide-no">23</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Gerçek riskler</div>
+          <h2 data-anim>Beş risk, ve hiçbiri "model yeterince akıllı değil" değil.</h2>
+          <div class="rows" style="gap: 16px">
+            <div class="row" data-anim>
+              <div class="n">01</div>
+              <div class="t">Güvenilirlik: demoda çalışan, production'da bozulan sistemler.
+                <span>Üretilen kod derlenebilir ve yine de yanlış olabilir.</span></div>
+            </div>
+            <div class="row" data-anim>
+              <div class="n">02</div>
+              <div class="t">Yönetişim: yetersiz guardrail'la ajan hassas veriye dokunabilir.
+                <span>Ve bunu, yapmaması gerektiğini "bilmediği" için değil, kimse engellemediği için yapar.</span></div>
+            </div>
+            <div class="row" data-anim>
+              <div class="n">03</div>
+              <div class="t">Maliyet: kaçak araç çağrıları ve döngüler token maliyetini büyütür.
+                <span>Maliyet olay başına değil döngü başına birikir, bu yüzden tahminler 2-3 kat aşılabiliyor.</span></div>
+            </div>
+            <div class="row" data-anim>
+              <div class="n">04</div>
+              <div class="t">Hata ayıklama: non-deterministik sistemde sorunu yeniden üretmek zor.
+                <span>Trace yoksa "geçen sefer neden öyle yaptı" sorusunun cevabı yoktur.</span></div>
+            </div>
+            <div class="row" data-anim>
+              <div class="n">05</div>
+              <div class="t">İnsan onayı hâlâ zorunlu, ve bu geçici bir durum değil.
+                <span>Yüksek etkili adımlarda onay kapısı, sektörün bugün fiilen durduğu yer.</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 25 ========================================== guardrail -->
+    <div class="scene-frame" id="scene-guardrail" data-composition-id="guardrail" data-start="240" data-duration="10"
+         data-label="Guardrail nereye konur" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-guardrail" data-start="240" data-duration="10" data-track-index="1">
+        <div class="slide-no">24</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Guardrail nereye konur</div>
+          <h2 data-anim>Guardrail prompt'ta değil, <em>IAM'de yaşar.</em></h2>
+          <p class="lede" data-anim>
+            "Kişisel bilgi sütunlarını sorgulama" bir cümle değil, bir erişim politikasıdır.
+            Prompt penceresindeki kural, ikna edilebilir bir kuraldır.
+          </p>
+          <div class="cards c3" data-anim>
+            <div class="card">
+              <span class="k">Desen 1</span>
+              <h3>Explain and Confirm</h3>
+              <p>Ajan taslağı ve gerekçesini sunar, insan onaylar. En yavaş, en güvenli.</p>
+            </div>
+            <div class="card">
+              <span class="k">Desen 2</span>
+              <h3>Override</h3>
+              <p>Ajan hareket eder, insan veto edebilir. Geri alınabilir işler için.</p>
+            </div>
+            <div class="card">
+              <span class="k">Desen 3</span>
+              <h3>Sandbox and Deploy</h3>
+              <p>Ajan izole bir dalda test eder, sonuç incelenip taşınır.</p>
+            </div>
+          </div>
+          <div class="kicker" data-anim>
+            Ve salondaki kural bazlı ekiplere asıl cevap şu:
+            <b>agentic yaklaşım kural bazlıyı yok etmez, üstüne katman ekler.</b>
+            Deterministik kararlar kural motorunda kalır; ajan, kuralın yazılmadığı yeri karşılar.
+            Son on yılda yazdığınız testler çöpe gitmiyor, ajanın doğrulayıcısı oluyor.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 26 =========================================== merdiven -->
+    <div class="scene-frame" id="scene-merdiven" data-composition-id="merdiven" data-start="250" data-duration="10"
+         data-label="Olgunluk merdiveni" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-merdiven" data-start="250" data-duration="10" data-track-index="1">
+        <div class="slide-no">25</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Bölüm 5: Nereden başlanır</div>
+          <h2 data-anim>Her basamakta tek soru: <em>burada en kötü sonuç nedir?</em></h2>
+          <div class="ladder" data-anim>
+            <div class="step" style="padding-top: 60px">
+              <div class="lvl">01</div>
+              <h3>İzle</h3>
+              <p>Yalnızca okur: log, sorgu geçmişi, metadata.</p>
+              <p style="margin-top: 12px; color: var(--dim)">En kötü sonuç: kötü bir öneri.</p>
+            </div>
+            <div class="step" style="padding-top: 76px">
+              <div class="lvl">02</div>
+              <h3>Öner</h3>
+              <p>Teşhis ve düzeltme adayı üretir, uygulamaz.</p>
+              <p style="margin-top: 12px; color: var(--dim)">En kötü sonuç: boşa giden bir inceleme.</p>
+            </div>
+            <div class="step" style="padding-top: 92px">
+              <div class="lvl">03</div>
+              <h3>Sandbox'ta değiştir</h3>
+              <p>İzole bir dalda uygular ve test eder.</p>
+              <p style="margin-top: 12px; color: var(--dim)">En kötü sonuç: bozuk bir dal.</p>
+            </div>
+            <div class="step here" style="padding-top: 108px">
+              <div class="lvl">04 · DEMO BURADA</div>
+              <h3>Onayla uygula</h3>
+              <p>İnsan onayından sonra üretime yazar ve yeniden çalıştırır.</p>
+              <p style="margin-top: 12px; color: var(--dim)">En kötü sonuç: sizin onayladığınız bir hata.</p>
+            </div>
+            <div class="step" style="padding-top: 124px">
+              <div class="lvl">05</div>
+              <h3>Otonom</h3>
+              <p>Onay kapısı olmadan uygular.</p>
+              <p style="margin-top: 12px; color: var(--dim)">En kötü sonuç: sessiz bir hata.</p>
+            </div>
+          </div>
+          <div class="kicker" data-anim>
+            Çoğu ekip 2. ve 3. basamakta ciddi değer buluyor ve
+            <b>5'e hiç geçmesi gerekmiyor.</b>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 27 ==================================== nereden-baslanir -->
+    <div class="scene-frame" id="scene-nereden-baslanir" data-composition-id="nereden-baslanir" data-start="260" data-duration="10"
+         data-label="Nereden başlanır" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-nereden-baslanir" data-start="260" data-duration="10" data-track-index="1">
+        <div class="slide-no">26</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Pazartesi sabahı</div>
+          <h2 data-anim>
+            Ajanı önce düzeltmesi için değil, <em>izlemesi için</em> bırakın.
+          </h2>
+          <p class="lede" data-anim>
+            Yalnızca log, sorgu geçmişi ve metadata okuyabildiğinde
+            <strong>en kötü sonuç kötü bir öneridir, bozuk bir pipeline değil.</strong>
+          </p>
+          <div class="cards c3" data-anim>
+            <div class="card">
+              <span class="k">Düşük riskli iş 1</span>
+              <h3>Dokümantasyon ve test üretimi</h3>
+              <p>Geri alınabilir, gözden geçirilebilir, ve kalitesi anında görülebilir.</p>
+            </div>
+            <div class="card">
+              <span class="k">Düşük riskli iş 2</span>
+              <h3>Alarm triyajı</h3>
+              <p>"Bu alarm neden çıktı, ilgili mi" sorusunu ön-cevaplar. İnsan kararı yerinde kalır.</p>
+            </div>
+            <div class="card">
+              <span class="k">Düşük riskli iş 3</span>
+              <h3>Kök neden ön analizi</h3>
+              <p>Lineage'i gezip hipotez listesi çıkarır. Yanılırsa maliyeti bir dakikalık okuma.</p>
+            </div>
+          </div>
+          <div class="kicker" data-anim>
+            Ve bir uyarı: ajanın vaadi <b>"daha akıllı alarm" olamaz.</b>
+            Otomatik anomali tespiti de vakaların çoğunda yanlış alarm üretiyor.
+            Vaat, teşhis ve doğrulama döngüsünün kendisidir.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 28 =========================================== ekosistem -->
+    <div class="scene-frame" id="scene-ekosistem" data-composition-id="ekosistem" data-start="270" data-duration="10"
+         data-label="Ekosistem haritası" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-ekosistem" data-start="270" data-duration="10" data-track-index="1">
+        <div class="slide-no">27</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Ekosistem, kategori olarak</div>
+          <h2 data-anim>İsimleri değil <em>kategorileri</em> öğrenin. İsimler altı ayda değişiyor.</h2>
+          <div class="cards c3" data-anim>
+            <div class="card">
+              <span class="k">Platform-native</span>
+              <p>Ambarınızın içinde çalışan ajanlar. Veriyi taşımadığınız için yönetişim hazır gelir.</p>
+            </div>
+            <div class="card">
+              <span class="k">Dönüşüm katmanı</span>
+              <p>Kod-native dönüşüm ajanları. Lineage ve derleyici zaten orada olduğu için doğrulayıcı bedava.</p>
+            </div>
+            <div class="card">
+              <span class="k">Gözlemlenebilirlik</span>
+              <p>İzleme ve kök neden ajanları. Genelde ilk pilot burada yapılıyor, çünkü salt okunur.</p>
+            </div>
+            <div class="card">
+              <span class="k">Ingestion ve konnektör</span>
+              <p>Kaynak keşfi ve konnektör üretimi. Şema kayması bu katmanda doğuyor.</p>
+            </div>
+            <div class="card">
+              <span class="k">Orkestrasyon</span>
+              <p>DAG üretimi ve onarımı. Airflow tarafında insan incelemesi artık yerleşik bir kavram.</p>
+            </div>
+            <div class="card">
+              <span class="k">Çerçeveler</span>
+              <p>Kendi ajanınızı kurarsanız. Stateful graf, araç izinleri, insan kapısı sizin elinizde.</p>
+            </div>
+          </div>
+          <div class="kicker" data-anim>
+            Bu sunumu hazırlarken <b>altı iddia çürüdü.</b> Bir satıcı veri mühendisliğinden
+            tamamen pivot etmişti, bir ürünün adı değişmişti, iki ürünün olgunluk seviyesi yanlıştı.
+            Kategoriler kaldı.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 29 =============================================== olcum -->
+    <div class="scene-frame" id="scene-olcum" data-composition-id="olcum" data-start="280" data-duration="10"
+         data-label="Ne ölçülür" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-olcum" data-start="280" data-duration="10" data-track-index="1">
+        <div class="slide-no">28</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Ölçmezseniz iptal edilenler kulübüne katılırsınız</div>
+          <h2 data-anim>Dört metrik yeter, ve üç eşik kararınızı sizin yerinize verir.</h2>
+          <div class="cards c4" data-anim>
+            <div class="card">
+              <span class="k">Metrik 1</span>
+              <h3>Öneri kabul oranı</h3>
+              <p>Ajanın önerdiğinin ne kadarı uygulanıyor.</p>
+            </div>
+            <div class="card">
+              <span class="k">Metrik 2</span>
+              <h3>İncelemede red oranı</h3>
+              <p>İnsan neyi ve neden geri çeviriyor.</p>
+            </div>
+            <div class="card">
+              <span class="k">Metrik 3</span>
+              <h3>Olay başına token maliyeti</h3>
+              <p>Döngü başına, olay başına değil.</p>
+            </div>
+            <div class="card">
+              <span class="k">Metrik 4</span>
+              <h3>Olay başına çözüm süresi</h3>
+              <p>Ajanlı ve ajansız, aynı olay sınıfında.</p>
+            </div>
+          </div>
+          <div class="cards c3" data-anim style="margin-top: 26px">
+            <div class="card accent">
+              <span class="k">Eşik 1</span>
+              <p>Red oranı düşüyorsa <b style="color: var(--text)">otonomiyi bir basamak artırın.</b></p>
+            </div>
+            <div class="card accent">
+              <span class="k">Eşik 2</span>
+              <p>Token maliyeti tahmini 2 katı aşarsa <b style="color: var(--text)">kapsamı daraltın.</b></p>
+            </div>
+            <div class="card accent">
+              <span class="k">Eşik 3</span>
+              <p>Yönetişim sahibi ya da net ROI metriği yoksa <b style="color: var(--text)">production'a hiç geçmeyin.</b></p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 30 ===================================== kanit-boslugu -->
+    <div class="scene-frame" id="scene-kanit-boslugu" data-composition-id="kanit-boslugu" data-start="290" data-duration="10"
+         data-label="Kanıt boşluğu" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-kanit-boslugu" data-start="290" data-duration="10" data-track-index="1">
+        <div class="slide-no">29</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Kavram bölümünün dürüst kapanışı</div>
+          <h2 data-anim>
+            Şu zincirin tamamını üretimde çalıştırıp ölçtüğünü yayınlayan
+            <em>bir şirket bulamadık.</em>
+          </h2>
+          <div class="quote" data-anim style="font-family: 'JetBrains Mono', monospace; font-size: 32px; line-height: 1.75">
+            şema kayması → tespit → teşhis → öneri → derleme kanıtı →<br />
+            <b style="color: var(--accent)">insan onayı</b> → uygulama → yeniden koşu → yeşil
+            <cite>Parçaları yayınlanmış. Zincirin tamamı ve ölçümü yayınlanmamış.</cite>
+          </div>
+          <div class="kicker" data-anim>
+            İnsan onayı adımı bir olgunlaşmamışlık işareti değil.
+            <b>Sektörün bugün fiilen durduğu yer.</b>
+            Ve on beş dakika sonra size tam olarak orayı göstereceğim.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 31 ====================================== demo-koprusu -->
+    <div class="scene-frame" id="scene-demo-koprusu" data-composition-id="demo-koprusu" data-start="300" data-duration="10"
+         data-label="Demo köprüsü" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-demo-koprusu" data-start="300" data-duration="10" data-track-index="1">
+        <div class="slide-no">30</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Bölüm 6: Şimdi ne göreceksiniz</div>
+          <h2 data-anim>Bir pipeline kırılacak, ve kimse bir şey yazmadan yeşile dönecek.</h2>
+          <div class="cards c3" data-anim>
+            <div class="card">
+              <span class="k">1 - 3</span>
+              <p style="line-height: 1.9; font-size: 27px">
+                Pipeline yeşil çalışıyor<br />
+                Upstream ekip bir kolonun adını değiştiriyor<br />
+                dbt dönüşümü kırılıyor, veri hâlâ iyi görünüyor
+              </p>
+            </div>
+            <div class="card accent">
+              <span class="k">4 - 6</span>
+              <p style="line-height: 1.9; font-size: 27px">
+                Ajan olayı kendisi açıyor, kimse bildirmiyor<br />
+                Canlı kaynağı ve transformation'ı okuyup teşhis koyuyor<br />
+                Düzeltmeyi üretiyor ve <b style="color: var(--accent)">derleyerek kanıtlıyor</b>
+              </p>
+            </div>
+            <div class="card">
+              <span class="k">7 - 9</span>
+              <p style="line-height: 1.9; font-size: 27px">
+                <b style="color: var(--accent)">Durup onay bekliyor</b><br />
+                Onaydan sonra uyguluyor ve yeniden tetikliyor<br />
+                Pipeline yeşile dönüyor
+              </p>
+            </div>
+          </div>
+          <div class="kicker" data-anim>
+            Merdivendeki yeri: <b>4. basamak, öner artı onaylanmış değişiklik.</b>
+            Otonom değil, ve bu bir eksiklik değil bir tercih.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 32 ================================ demo-ne-var-ne-yok -->
+    <div class="scene-frame" id="scene-demo-ne-var-ne-yok" data-composition-id="demo-ne-var-ne-yok" data-start="310" data-duration="10"
+         data-label="Demoda ne var, ne yok" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-demo-ne-var-ne-yok" data-start="310" data-duration="10" data-track-index="1">
+        <div class="slide-no">31</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Sınırları önden söylüyorum</div>
+          <h2 class="tight" data-anim>Demoda olmayan üç şey var, ve üçü de <em>kaza değil.</em></h2>
+          <div class="compare compact" data-anim>
+            <div class="col now">
+              <h3 style="color: var(--bad)">Yok, ve nedeni yazılı</h3>
+              <ul>
+                <li>
+                  <b>Uzun vadeli hafıza yok.</b> Her olay sıfırdan teşhis ediliyor.
+                </li>
+                <li>
+                  <b>Planlama yok.</b> Adımlar sabit bir graf: hasar yarıçapı küçük olan yarı.
+                </li>
+                <li>
+                  <b>MCP yok.</b> Sıradan istemci kütüphaneleri kullanılıyor.
+                </li>
+              </ul>
+            </div>
+            <div class="col next">
+              <h3>Var</h3>
+              <ul>
+                <li>Canlı şemadan toplanan kanıt, koda değil veritabanına bakarak</li>
+                <li>Gerçek derleme ile doğrulama, ve iki kez kendini düzeltme</li>
+                <li>Çözemezse açıklamayla <code>unfixable</code> kapanışı</li>
+                <li>İnsan onay kapısı: sessizce hiçbir şey uygulanmıyor</li>
+                <li>Uçtan uca trace, ve olay başına <b>bir centin altında</b> maliyet</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 33 ===================================== demo-ne-izleyin -->
+    <div class="scene-frame" id="scene-demo-ne-izleyin" data-composition-id="demo-ne-izleyin" data-start="320" data-duration="10"
+         data-label="Ne izlemenizi istiyorum" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-demo-ne-izleyin" data-start="320" data-duration="10" data-track-index="1">
+        <div class="slide-no">32</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Tek bir şey</div>
+          <h1 data-anim style="font-size: 88px">
+            İzlemenizi istediğim tek an:<br />
+            ajanın durup <span style="color: var(--accent)">onay beklediği</span> an.
+          </h1>
+          <div class="kicker" data-anim style="font-size: 40px">
+            Çünkü bu sistemin zor kısmı düzeltmeyi bulmak değil.
+            <b>Bulduktan sonra kendiliğinden uygulamamak.</b>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 34 ========================================== kaynakca -->
+    <div class="scene-frame" id="scene-kaynakca" data-composition-id="kaynakca" data-start="330" data-duration="10"
+         data-label="Kaynakça" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-kaynakca" data-start="330" data-duration="10" data-track-index="1">
+        <div class="slide-no">33</div>
+        <div class="pad center">
+          <div class="eyebrow" data-anim>Kaynaklar</div>
+          <h2 class="tight" data-anim>Her rakamın birincil kaynağı, ve kullanmadıklarımın listesi.</h2>
+          <div class="cards c2" data-anim>
+            <div class="card">
+              <span class="k">Hakemli çalışmalar</span>
+              <p style="line-height: 1.75; font-size: 25px">
+                Redyuk vd., EDBT '21 · Google TFX, MLSys '19 · Microsoft Lumos, KDD '20 ·
+                Warden, USENIX ATC '21 · Ghosh vd., ACM SoCC '22 · AlertGuardian, ASE '25 ·
+                LinkedIn SQL Bot, KDD '25 · METR, arXiv 2507.09089 · ELT-Bench-Verified, arXiv 2603.29399
+              </p>
+            </div>
+            <div class="card">
+              <span class="k">Satıcı kaynakları, etiketlenmiş</span>
+              <p style="line-height: 1.75; font-size: 25px">
+                Monte Carlo telemetrisi ve anketleri · Catchpoint SRE Report 2025 ·
+                dbt Labs State of Analytics Engineering 2025 ve 2026 · Gartner (2025 açıklaması,
+                2026 Hype Cycle) · Anthropic iç ajan yazısı · Pinterest mühendislik blogu
+              </p>
+            </div>
+          </div>
+          <div class="kicker" data-anim>
+            Slaytlar, konuşmacı notları ve kullanmadığım istatistiklerin gerekçeli listesi
+            <b>sunum reposunda</b>. Demo ve karar kayıtları ayrı repoda.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- BRANCH ============================== ekosistem-detay-tablo -->
+    <div class="scene-frame" id="scene-ekosistem-detay-tablo" data-composition-id="ekosistem-detay-tablo" data-start="340" data-duration="10"
+         data-label="Ek: ekosistem detay tablosu" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-ekosistem-detay-tablo" data-start="340" data-duration="10" data-track-index="1">
+        <div class="pad reference">
+          <div class="eyebrow">Ek: ekosistem, Ağustos 2026 itibarıyla doğrulandı</div>
+          <h2 class="tight" style="font-size: 46px">Olgunluk sütunu, isim sütunundan daha uzun ömürlü.</h2>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 21%">Araç</th>
+                <th style="width: 30%">Agentic yetenek</th>
+                <th class="mono" style="width: 20%">Olgunluk</th>
+                <th style="width: 29%">Not</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="name">Databricks Agent Bricks</td>
+                <td>Görev tarifinden ajan üretimi, otomatik değerlendirme</td>
+                <td class="mono ok">GA (Haz 2026)</td>
+                <td>Beta değil artık.</td>
+              </tr>
+              <tr>
+                <td class="name">Snowflake Cortex Agents</td>
+                <td>Yapılandırılmış ve yapılandırılmamış veride planlama, araç kullanımı</td>
+                <td class="mono ok">GA (Kas 2025)</td>
+                <td>"Snowflake Intelligence" adı <b>CoWork</b> oldu.</td>
+              </tr>
+              <tr>
+                <td class="name">dbt Developer Agent</td>
+                <td>Model build, refactor, test, doküman; build-fix döngüsü</td>
+                <td class="mono">Preview</td>
+                <td>Fusion ayrı motor değil, dbt Core v2.0'a birleşti.</td>
+              </tr>
+              <tr>
+                <td class="name">BigQuery Data Engineering Agent</td>
+                <td>Dataform pipeline kodu üretimi, Knowledge Catalog'a grounded</td>
+                <td class="mono ok">GA (Nis 2026)</td>
+                <td>Pipeline'ı <b>kendisi çalıştıramıyor</b>: kullanıcı onayı şart.</td>
+              </tr>
+              <tr>
+                <td class="name">Monte Carlo ajanları</td>
+                <td>Monitoring ve Troubleshooting; paralel hipotez testi</td>
+                <td class="mono">GA / kısmi preview</td>
+                <td>Nicel iddialar 2025 blogundan, bugünkü dokümanda yok.</td>
+              </tr>
+              <tr>
+                <td class="name">Matillion Maia</td>
+                <td>Ingest, dönüşüm, doğrulama genelinde agentic ETL</td>
+                <td class="mono ok">GA</td>
+                <td>Katman değil: Data Productivity Cloud'un tamamı Maia oldu.</td>
+              </tr>
+              <tr>
+                <td class="name">Fivetran AI Connector Agent</td>
+                <td>REST API dokümanından konnektör kodu üretimi</td>
+                <td class="mono">Beta</td>
+                <td>Fivetran ve dbt Labs birleşmesi 1 Haz 2026'da tamamlandı.</td>
+              </tr>
+              <tr>
+                <td class="name">Astronomer Otto</td>
+                <td>Airflow için amaca özel veri mühendisliği ajanı</td>
+                <td class="mono">Labs (Nis 2026)</td>
+                <td>Bu demonun senaryosuna en yakın ürün.</td>
+              </tr>
+              <tr>
+                <td class="name">LangGraph</td>
+                <td>Stateful, döngülü, çok-ajanlı graf orkestrasyonu</td>
+                <td class="mono ok">1.0 GA (Eki 2025)</td>
+                <td>Monte Carlo Troubleshooting Agent bunun üzerine kurulu.</td>
+              </tr>
+              <tr>
+                <td class="name">Prefect ve Dagster</td>
+                <td>Orkestrasyon</td>
+                <td class="mono">Ayrı ürünler</td>
+                <td>Satın alma oldu ama <b>ikisi de bağımsız devam ediyor.</b></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- BRANCH =========================== istatistik-hijyeni-liste -->
+    <div class="scene-frame" id="scene-istatistik-hijyeni-liste" data-composition-id="istatistik-hijyeni-liste" data-start="350" data-duration="10"
+         data-label="Ek: kullanmadığım istatistikler" data-width="1920" data-height="1080">
+      <section class="clip" id="clip-istatistik-hijyeni-liste" data-start="350" data-duration="10" data-track-index="1">
+        <div class="pad reference">
+          <div class="eyebrow">Ek: kullanmadığım istatistikler</div>
+          <h2 class="tight" style="font-size: 46px">
+            Aradım, birincil kaynağını bulamadım, kullanmadım.
+          </h2>
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 44%">Çok dolaşan iddia</th>
+                <th style="width: 56%">Neden kullanmadım</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="name">"Alarmların %51'i hiç incelenmiyor" (IBM 2023)</td>
+                <td>
+                  Raporda 51 diye bir sayı yok. Rapor "yüzde 49'una ulaşıyorlar" diyor.
+                </td>
+              </tr>
+              <tr>
+                <td class="name">"Veri bilimciler zamanının %80'ini temizliğe harcıyor"</td>
+                <td>
+                  Atıf zinciri izlendi ve çöktü. Gerçek rakamlar %51 ile %60 arasında.
+                </td>
+              </tr>
+              <tr>
+                <td class="name">"Kötü veri kalitesi yılda 3,1 trilyon dolar" (IBM)</td>
+                <td>Kaynak bir infografik, ve yayından kaldırılmış.</td>
+              </tr>
+              <tr>
+                <td class="name">"Kötü veri kalitesi kurum başına yılda 12,9 milyon dolar" (Gartner)</td>
+                <td>
+                  Gartner'ın yayınında var, ama metodolojisi kamuya kapalı.
+                </td>
+              </tr>
+              <tr>
+                <td class="name">"Ekipler haftada 2.000 alarm alıyor, %3'ü gerçekten önemli"</td>
+                <td>
+                  Bir kaynağa atfediliyor ama rapor adı ve bağlantısı yok.
+                </td>
+              </tr>
+              <tr>
+                <td class="name">"Bilinen bilinmeyen / bilinmeyen bilinmeyen" çerçevesi</td>
+                <td>
+                  İzi sürüldüğünde tamamen satıcı kökenli. Argümanı Redyuk vd. üzerine kurdum.
+                </td>
+              </tr>
+              <tr>
+                <td class="name">Monte Carlo "olay çözüm süresinde %80+ azalma"</td>
+                <td>
+                  Aynı satıcının <b>telemetrisini</b> kullandım, <b>iddiasını</b> değil.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="kicker" style="margin-top: 30px; font-size: 30px">
+            Bir istatistiğin çok tekrarlanması, doğrulanmış olmasıyla aynı şey değildir.
+            <b>Bu slaytın kendisi sunumun yöntem beyanı.</b>
+          </div>
+        </div>
+      </section>
+    </div>
+
     </div>
 
     <script>
-      window.__timelines = window.__timelines || {};
-      const tl = gsap.timeline({ paused: true });
-      // Example: tl.from("#title", { opacity: 0, y: -50, duration: 1 }, 0);
-      window.__timelines["main"] = tl;
+      // One seekable root timeline drives everything: scene visibility, entrance
+      // animations and fragment reveals are all tweens placed at absolute
+      // composition seconds. Nothing here runs on a private clock, so seeking to
+      // any time renders the correct frame in either direction.
+      (function () {
+        var SCENE_SECONDS = 10;
+        var FPS = 30;
+
+        var SCENES = [
+          "kapak", "hook", "bugun-kural", "kuralin-varsayimi", "gurultu",
+          "kural-curumesi", "kok-neden", "insan-faturasi", "durustluk-freni",
+          "uc-evre", "copilot-ajan", "niyet-odakli", "neden-simdi",
+          "ajan-dongusu", "grounding", "self-correction", "hafiza", "planlama",
+          "gozlemlenebilirlik", "determinizm", "hype-cycle", "olculmus-sonuclar",
+          "metr", "bes-risk", "guardrail", "merdiven", "nereden-baslanir",
+          "ekosistem", "olcum", "kanit-boslugu", "demo-koprusu",
+          "demo-ne-var-ne-yok", "demo-ne-izleyin", "kaynakca",
+          // Branch scenes: unreachable from the main line, but they still need a
+          // time range here and in the manifest or a hotspot lands on a blank frame.
+          "ekosistem-detay-tablo", "istatistik-hijyeni-liste"
+        ];
+
+        // Fragment hold-times sit just after their scene's start so successive
+        // Next presses read as immediate reveals rather than waits.
+        var FRAGMENTS = {
+          gurultu: ["f-gurultu-1", "f-gurultu-2", "f-gurultu-3"],
+          "neden-simdi": ["f-simdi-1", "f-simdi-2", "f-simdi-3", "f-simdi-4"],
+          "olculmus-sonuclar": ["f-sonuc-1", "f-sonuc-2", "f-sonuc-3"]
+        };
+        var FRAGMENT_STEP = 0.15;
+        var FRAGMENT_OFFSET = 0.1;
+
+        var MAIN_LINE_SCENES = 34;
+        var TOTAL_SECONDS = SCENES.length * SCENE_SECONDS;
+
+        window.__timelines = window.__timelines || {};
+        var root = gsap.timeline({ paused: true });
+
+        // Establishes the seekable range even where a scene places no tween.
+        root.to({}, { duration: TOTAL_SECONDS }, 0);
+
+        root.fromTo(
+          "#deck-progress",
+          { scaleX: 0 },
+          { scaleX: 1, duration: MAIN_LINE_SCENES * SCENE_SECONDS, ease: "none" },
+          0
+        );
+
+        SCENES.forEach(function (id, index) {
+          var el = document.getElementById("scene-" + id);
+          if (!el) return;
+          var start = index * SCENE_SECONDS;
+
+          root.set(el, { autoAlpha: 1, pointerEvents: "auto" }, start);
+          // The last scene stays up through the final frame rather than blanking.
+          if (index < SCENES.length - 1) {
+            root.set(el, { autoAlpha: 0, pointerEvents: "none" }, start + SCENE_SECONDS);
+          }
+
+          var animEls = el.querySelectorAll("[data-anim]");
+          if (animEls.length) {
+            root.from(
+              animEls,
+              { opacity: 0, y: 26, duration: 0.4, stagger: 0.055, ease: "power2.out" },
+              start + 0.02
+            );
+          }
+
+          (FRAGMENTS[id] || []).forEach(function (fragId, fragIndex) {
+            var fragEl = document.getElementById(fragId);
+            if (!fragEl) return;
+            root.fromTo(
+              fragEl,
+              { opacity: 0, x: -22 },
+              { opacity: 1, x: 0, duration: 0.32, ease: "power2.out" },
+              start + FRAGMENT_OFFSET + fragIndex * FRAGMENT_STEP
+            );
+          });
+        });
+
+        // The player probes the iframe for window.__timelines and, finding no
+        // runtime bridge, seeks the key matching the first data-composition-id.
+        // That element is the root wrapper, so this key must stay "root".
+        window.__timelines["root"] = root;
+
+        // Park on the cover's rest frame rather than t=0. A zero-duration tween
+        // sitting at position 0 has not rendered on a fresh load, and the cover's
+        // entrance tween has not run either, so t=0 paints an empty slide. Every
+        // slide's rest frame is its midpoint, which is where the controller parks
+        // an unfragmented slide anyway.
+        root.time(SCENE_SECONDS / 2, false);
+
+        // <hyperframes-slideshow> maps a sceneId to a playhead position from this
+        // manifest. With no engine to inject it, the composition posts it itself.
+        function postTimeline() {
+          try {
+            parent.postMessage(
+              {
+                source: "hf-preview",
+                type: "timeline",
+                durationSeconds: TOTAL_SECONDS,
+                durationInFrames: TOTAL_SECONDS * FPS,
+                fps: FPS,
+                compositionWidth: 1920,
+                compositionHeight: 1080,
+                scenes: SCENES.map(function (id, index) {
+                  return {
+                    id: id,
+                    start: index * SCENE_SECONDS,
+                    duration: SCENE_SECONDS
+                  };
+                })
+              },
+              "*"
+            );
+          } catch (error) {
+            /* Opened directly rather than inside a player: nobody to tell. */
+          }
+        }
+
+        if (document.readyState === "complete") {
+          setTimeout(postTimeline, 300);
+        } else {
+          window.addEventListener("load", function () {
+            setTimeout(postTimeline, 300);
+          });
+        }
+      })();
     </script>
   </body>
 </html>
