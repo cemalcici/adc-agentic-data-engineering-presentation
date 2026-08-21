@@ -24,6 +24,16 @@ npm run serve
 
 Sonra `http://localhost:4173` adresini açın.
 
+Sunucu ön planda çalışır, yani `Ctrl+C` kapatır. Arka planda başlattıysanız ya
+da terminali kapattıysanız 4173 portunda takılı kalır. Serbest bırakmak için:
+
+```bash
+npm run serve:stop
+```
+
+Bu komut portu kimin tuttuğunu bulup kapatır. Sunucu zaten kapalıysa hiçbir şey
+yapmaz ve hata vermez, yani emin olmak için çalıştırmakta sakınca yok.
+
 ## Sunum yapmak
 
 Sağ alttaki kapsülde **Present** düğmesi var, ya da **P** tuşuna basın. İkinci
@@ -82,10 +92,12 @@ Slayt içeriği, zamanlama ve konuşmacı notları tek bir yerde yaşıyor:
 ## Slaytları değiştirmek
 
 ```bash
-npm run sync     # island'i sarmalayiciya kopyalar, JSON'u dogrular
-npm run notes    # SPEAKER-NOTES.md dosyasini yeniden uretir
-npm run lint     # slideshow ve kompozisyon kurallari
-npm run check    # tarayicida calistirip dogrular
+npm run sync        # island'i sarmalayiciya kopyalar, JSON'u dogrular
+npm run notes       # SPEAKER-NOTES.md dosyasini yeniden uretir
+npm run lint        # slideshow ve kompozisyon kurallari
+npm run check       # tarayicida calistirip dogrular
+npm run serve       # yerel sunucu, http://localhost:4173
+npm run serve:stop  # 4173 portunu serbest birakir
 ```
 
 Bir slaytın metnini değiştirdikten sonra `npm run lint` yeter. Island'a

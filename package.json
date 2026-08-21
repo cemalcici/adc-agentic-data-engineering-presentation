@@ -8,7 +8,8 @@
     "studio": "npx --yes hyperframes@0.8.5 preview ./composition --background",
     "lint": "npx --yes hyperframes@0.8.5 lint ./composition",
     "check": "npx --yes hyperframes@0.8.5 check ./composition",
-    "serve": "python3 -m http.server 4173",
-    "notes": "node scripts/export-notes.mjs"
+    "serve": "python3 -m http.server 4173 --directory .",
+    "notes": "node scripts/export-notes.mjs",
+    "serve:stop": "lsof -ti tcp:4173 | xargs -I{} kill {}"
   }
 }
