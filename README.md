@@ -5,8 +5,18 @@ sunum. Ana argüman şu: sorun kuralların yanlış olması değil, kuralın
 kapsayamadığı alanın kural yazma hızından daha hızlı büyümesi. Agentic yaklaşım
 kural bazlıyı yok etmiyor, üstüne bir katman ekliyor.
 
-**Şekli:** 45 dakika sunum, ardından 15 dakika canlı demo. 34 ana slayt, artı
-yalnızca soru gelirse açılan 2 ek slayt.
+**Şekli:** 45 dakika sunum, ardından 15 dakika canlı demo. Üç perde, 38 ana
+slayt, artı yalnızca soru gelirse açılan 2 ek slayt.
+
+| Perde | Slayt | Soru |
+| --- | --- | --- |
+| I. Neden değişmeli | 3 - 14 | Kuralı nereye koyuyoruz, nereye yetişemiyor |
+| II. Nasıl çalışıyor | 15 - 22 | Bir veri ajanı fiilen neyden yapılır |
+| III. Ne yapmalı | 23 - 38 | Riskler, guardrail'lar, nereden başlanır |
+
+Slaytların çoğu adım adım kuruluyor: aynı slayt numarasında kalıp her `→` bir
+bileşen ekliyor. Ana hattın tamamı 124 tıklama, yani 45 dakikada adım başına
+ortalama 22 saniye.
 
 ---
 
@@ -47,11 +57,13 @@ konuşmacı notları ve geçen süre bulunur.
 | `←` / `Backspace` | Geri |
 | `P` | Sunucu modunu aç |
 
-Üç slaytta adımlı açılım var (5, 13 ve 22): bu slaytlarda `→` slaytı
-değiştirmez, sıradaki maddeyi açar.
+Slaytların çoğunda adımlı açılım var: bu slaytlarda `→` slaytı değiştirmez,
+sıradaki bileşeni açar. Sayaç aynı numarada kalır. Konuşmacı notları da bu
+adımlara göre numaralandı, yani notta `1)` yazan cümle ilk adıma karşılık
+geliyor.
 
-İki slaytta tıklanabilir kutucuk var. 9. slayttaki kutucuk kullanılmayan
-istatistiklerin listesini, 28. slayttaki kutucuk detaylı ekosistem tablosunu
+İki slaytta tıklanabilir kutucuk var. 10. slayttaki kutucuk kullanılmayan
+istatistiklerin listesini, 32. slayttaki kutucuk detaylı ekosistem tablosunu
 açar. İkisi de ana hattın dışında; ancak tıklarsanız görünürler ve geri
 dönmek için `←` yeterli.
 
@@ -77,7 +89,7 @@ Seyirci sekmesini paylaşın, sunucu ekranı sizde kalsın.
 ```
 index.html            Sunumu açan sarmalayıcı. GitHub Pages girişi de bu.
 composition/          Slaytların kendisi: tek bir HyperFrames kompozisyonu
-  index.html          36 sahne, slideshow island ve zaman çizelgesi
+  index.html          40 sahne, slideshow island ve zaman çizelgesi
   assets/fonts/       Inter ve JetBrains Mono, latin + latin-ext
   vendor/gsap.min.js
 vendor/               Player ve slideshow bundle'ları
@@ -110,9 +122,28 @@ saniyede başlıyor. Yeni sahne eklerken üç yeri birlikte güncelleyin: sahnen
 kendisi, çalışma zamanı script'indeki `SCENES` dizisi ve island. Üçü ayrışırsa
 lint yakalar.
 
-`npm run lint` iki uyarı verir: dosya uzun ve tek bir track'te 36 zamanlı öğe
+`npm run lint` iki uyarı verir: dosya uzun ve tek bir track'te 40 zamanlı öğe
 var. İkisi de bilinçli. Bu bir deck, sahneleri ayrı dosyalara bölmek onları
 sürüklenmeye açık hâle getirirdi.
+
+## Taşma denetimi
+
+Slaytların içeriği 1620×840'lık güvenli alanın içinde kalmalı, ve sağ alttaki
+360×140'lık köşe navigasyon kapsülü için boş durmalı. Kontrol etmek için deck'i
+şu adresle açın:
+
+```
+http://localhost:4173/composition/index.html?debug=layout
+```
+
+Güvenli alan yeşil kesikli çerçeveyle, nav köşesi kırmızıyla çizilir; sınırı
+geçen her öğe kırmızı konturla işaretlenir. Tarayıcı konsolundan
+`__hfAuditLayout()` çağırırsanız ihlallerin listesini döndürür.
+
+Aynı sayfada `__hfAuditAnchors()` ikinci bir kontrol yapar: bir SVG etiketi
+`text-anchor` özniteliği yazıp CSS onu ezdiğinde etiket yanlış yere hizalanır ve
+yanındaki şekle girer. Bu, güvenli alan ihlali sayılmadığı için gözle
+yakalanması gereken bir hatadır; denetleyici onu da listeler.
 
 ## Yayınlamak
 
