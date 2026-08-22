@@ -17,9 +17,9 @@ Kendinizi tanıtın ve sözü hemen bağlayın. Bu sunum iki parça: kırk beş 
 
 `hook`
 
-Bu slaytta 4 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
+Bu slaytta 3 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
 
-Odayı burada kazanın. 1) Herkesin yaşadığı anı anlatın, sonra ilk rakamı açın: olayların yalnızca yüzde elli beşini otomatik izleyiciler yakalamış. 2) Yüzde yirmi dokuzunu dışarıdaki kullanıcılar bildirmiş, yani sorunu müşteri söylemiş. 3) Yüzde on yedisinde ilgili yerde ne monitör ne telemetri varmış. 4) Kaynağı açın ve vurgulayın: bu Microsoft Teams, yüz elli iki yüksek şiddetli olayın postmortem analizi. Kaynağı, insanı ve bütçesi olan bir ekip. Sorun özen eksikliği değil.
+Odayı burada kazanın. Kaynak künyesi slayt açılır açılmaz altta duruyor, o yüzden rakamlara ayrı ayrı kaynak vermeyin; bir kez vurgulayın ve geçin: bu Microsoft Teams'in yüz elli iki yüksek şiddetli olayının postmortem analizi, yani kaynağı, insanı ve bütçesi olan bir ekip. Sorun özen eksikliği değil. 1) Herkesin yaşadığı anı anlatın, sonra ilk rakamı açın: olayların yalnızca yüzde elli beşini otomatik izleyiciler yakalamış. 2) Yüzde yirmi dokuzunu dışarıdaki kullanıcılar bildirmiş, yani sorunu müşteri söylemiş. 3) Yüzde on yedisinde ilgili yerde ne monitör ne telemetri varmış.
 
 ## 3 · Perde I: Neden değişmeli
 
@@ -49,17 +49,17 @@ Perdenin tezi burada, acele etmeyin. 1) Redyuk ve arkadaşlarının cümlesini y
 
 `gurultu`
 
-Bu slaytta 4 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
+Bu slaytta 3 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
 
-Üç rakam, sırayla. 1) Microsoft'un Skype ve Teams alarmlarını dört ay boyunca üretimde ölçtüğü Lumos çalışmasında, alarmların yüzde doksanından fazlası hiç çıkmamalıymış. Metrik bazında yüzde doksan ile doksan sekiz virgül iki arasında. 2) Tencent'in çalışmasında tek bir sistemde elli dokuz bin altı yüz yedi aktif alarm kuralı sayılmış. 3) En can alıcısı: bazı sistemler hiç arıza yaşamadan günde on binlerce alarm üretiyor. 4) Kaynakları gösterin ve altını çizin: bunlar satıcı anketi değil, hakemli akademik çalışmaların üretim ölçümü.
+Üç rakam, sırayla. Kaynaklar altta zaten duruyor; açılışta bir kez söyleyin: bunlar satıcı anketi değil, hakemli akademik çalışmaların üretim ölçümü. 1) Microsoft'un Skype ve Teams alarmlarını dört ay boyunca üretimde ölçtüğü Lumos çalışmasında, alarmların yüzde doksanından fazlası hiç çıkmamalıymış. Metrik bazında yüzde doksan ile doksan sekiz virgül iki arasında. 2) Tencent'in çalışmasında tek bir sistemde elli dokuz bin altı yüz yedi aktif alarm kuralı sayılmış. 3) En can alıcısı: bazı sistemler hiç arıza yaşamadan günde on binlerce alarm üretiyor.
 
 ## 7 · Kural envanteri çürür
 
 `kural-curumesi`
 
-Bu slaytta 4 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
+Bu slaytta 3 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
 
-Kural envanteri bakım ister ve bu bakımın maliyeti görünmezdir. 1) Kural tabanlı monitörler anomali tespitine göre yaklaşık yüzde kırk daha fazla bakım dokunuşu istiyor. 2) Haftada elli alarmı geçen bir kanalda etkileşim yüzde on beş düşüyor, yüzü geçince yüzde yirmi daha. Burada salona sorun: kaç kişinin susturulmuş bir alarm kanalı var? Eller kalkar, ve o eller sizin argümanınızdır. 3) Aynı olgu CI tarafında da var: testlerin yalnızca yüzde bir virgül yirmi üçü ömrü boyunca bir kırılma bulmuş. 4) Kaynakları gösterin; Monte Carlo satıcı telemetrisi, Google tarafı hakemli.
+Kural envanteri bakım ister ve bu bakımın maliyeti görünmezdir. Kaynaklar altta duruyor: Monte Carlo tarafı satıcı telemetrisi, Google tarafı hakemli. 1) Kural tabanlı monitörler anomali tespitine göre yaklaşık yüzde kırk daha fazla bakım dokunuşu istiyor. 2) Haftada elli alarmı geçen bir kanalda etkileşim yüzde on beş düşüyor, yüzü geçince yüzde yirmi daha. Burada salona sorun: kaç kişinin susturulmuş bir alarm kanalı var? Eller kalkar, ve o eller sizin argümanınızdır. 3) Aynı olgu CI tarafında da var: testlerin yalnızca yüzde bir virgül yirmi üçü ömrü boyunca bir kırılma bulmuş.
 
 ## 8 · Kök neden dağılımı
 
@@ -67,15 +67,15 @@ Kural envanteri bakım ister ve bu bakımın maliyeti görünmezdir. 1) Kural ta
 
 Bu slaytta 7 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
 
-Burada dürüstlük yapacaksınız, çünkü bu slayt kendi demonuzu zorluyor. Barlar sırayla doluyor. 1) Pipeline çalıştırma hataları yüzde yirmi altı virgül iki. 2) Gerçek dünya değişimi yüzde yirmi, amber. 3) Ingestion kesintileri yüzde on altı virgül altı. 4) Platform kararsızlığı yüzde on beş virgül iki. 5) Kasıtlı değişiklikler yüzde on dört virgül iki, yine amber. 6) Şema kayması yalnızca yüzde yedi virgül sekiz, yeşil. 7) Son satırı okuyun ve iki şeyi birden söyleyin: amber olanların toplamı yüzde otuz dört, yani olay bile değil, ekibiniz olmayan bir problemi kovalıyor. Ve yeşil olan, birazdan göreceğiniz demonun kullandığı sınıf. Saklamayın: en yaygın olanı değil, en temiz gösterilebilir olanı seçtik.
+Burada dürüstlük yapacaksınız, çünkü bu slayt kendi demonuzu zorluyor. Barlar sırayla doluyor. 1) Pipeline çalıştırma hataları yüzde yirmi altı virgül iki. 2) Gerçek dünya değişimi yüzde yirmi, amber. 3) Ingestion kesintileri yüzde on altı virgül altı. 4) Platform kararsızlığı yüzde on beş virgül iki. 5) Kasıtlı değişiklikler yüzde on dört virgül iki, yine amber. 6) Şema kayması yalnızca yüzde yedi virgül sekiz, yeşil. 7) Son satırı açın ve iki şeyi birden söyleyin: amber olanların toplamı yüzde otuz dört, yani olay bile değil, ekibiniz olmayan bir problemi kovalıyor. Ve yeşil olan, birazdan göreceğiniz demonun kullandığı sınıf. Saklamayın: en yaygın olanı değil, en temiz gösterilebilir olanı seçtik.
 
 ## 9 · Faturanın insan tarafı
 
 `insan-faturasi`
 
-Bu slaytta 4 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
+Bu slaytta 3 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
 
-Fatura sistemin değil, nöbetteki insanın üstünde birikiyor. 1) Ayda altmış yedi olay. 2) Olay başına ortalama on beş saat. 3) Ve en acı rakam: olayların yüzde yetmiş dördünde sorunu iş tarafı veri ekibinden önce fark ediyor. 4) Kaynağı gösterin ve satıcı anketi olduğunu kendiniz söyleyin, çünkü bir sonraki slayt zaten o freni çekiyor. Freni siz çekerseniz salondaki şüpheci çekmek zorunda kalmaz.
+Fatura sistemin değil, nöbetteki insanın üstünde birikiyor. Kaynak altta duruyor ve satıcı anketi olduğunu kendiniz söyleyin, çünkü bir sonraki slayt zaten o freni çekiyor. Freni siz çekerseniz salondaki şüpheci çekmek zorunda kalmaz. 1) Ayda altmış yedi olay. 2) Olay başına ortalama on beş saat. 3) Ve en acı rakam: olayların yüzde yetmiş dördünde sorunu iş tarafı veri ekibinden önce fark ediyor.
 
 ## 10 · Dürüstlük freni
 
@@ -115,9 +115,9 @@ Bu slaytta 2 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
 
 `neden-simdi`
 
-Bu slaytta 5 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
+Bu slaytta 4 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
 
-Dört madde, hızlı gidin ama dördüncüde durun. 1) Modeller artık araç çağırabiliyor, sadece metin üretmiyor. 2) Ajan çerçeveleri bir nokta sıfır seviyesine geldi: LangGraph ekim iki bin yirmi beş, Microsoft Agent Framework nisan iki bin yirmi altı. 3) MCP bir satıcı özelliği olmaktan çıkıp standart oldu; Anthropic aralık iki bin yirmi beşte Linux Foundation'a bağışladı. 4) Ve talep. Ekiplerin yüzde yetmiş ikisi AI destekli kod yazmayı önceliklendiriyor, ama yalnızca yüzde yirmi dördü AI destekli pipeline yönetimini. Boşluk tam burada, ve bu sunum o boşluğun içinde duruyor. 5) Kaynağı gösterin, dbt Labs anketi.
+Dört madde, hızlı gidin ama dördüncüde durun. 1) Modeller artık araç çağırabiliyor, sadece metin üretmiyor. 2) Ajan çerçeveleri bir nokta sıfır seviyesine geldi: LangGraph ekim iki bin yirmi beş, Microsoft Agent Framework nisan iki bin yirmi altı. 3) MCP bir satıcı özelliği olmaktan çıkıp standart oldu; Anthropic aralık iki bin yirmi beşte Linux Foundation'a bağışladı. 4) Ve talep. Ekiplerin yüzde yetmiş ikisi AI destekli kod yazmayı önceliklendiriyor, ama yalnızca yüzde yirmi dördü AI destekli pipeline yönetimini. Boşluk tam burada, ve bu sunum o boşluğun içinde duruyor. Kaynak altta: dbt Labs anketi, üç yüz altmış üç katılımcı.
 
 ## 15 · Perde II: Nasıl çalışıyor
 
@@ -155,9 +155,9 @@ Sunumun en pratik cümlesi burada. 1) Döngüyü gösterin: üret, doğrula, hat
 
 `hafiza`
 
-Bu slaytta 4 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
+Bu slaytta 3 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
 
-Hafıza sezgiye aykırı bir takas. 1) Bakımlı bağlamla doğruluk yüzde doksan beş. 2) Bakımsız bırakıldıktan bir ay sonra yaklaşık yüzde altmış beşe düşüyor. Hafıza hızlandırır ve tam olarak aynı oranda eskitir: dün doğru olan cevabı, bugün değişmiş bir sistem hakkında aynı özgüvenle tekrarlar. 3) Demodaki tercihi söyleyin: hafıza bilerek yok, her olay sıfırdan teşhis ediliyor. 4) Kaynağı gösterin ve birinci taraf olduğunu belirtin; Anthropic kendi iç ajanı hakkında yazmış.
+Hafıza sezgiye aykırı bir takas. Kaynak altta duruyor ve birinci taraf olduğunu belirtin; Anthropic kendi iç ajanı hakkında yazmış. 1) Bakımlı bağlamla doğruluk yüzde doksan beş. 2) Bakımsız bırakıldıktan bir ay sonra yaklaşık yüzde altmış beşe düşüyor. Hafıza hızlandırır ve tam olarak aynı oranda eskitir: dün doğru olan cevabı, bugün değişmiş bir sistem hakkında aynı özgüvenle tekrarlar. 3) Demodaki tercihi söyleyin: hafıza bilerek yok, her olay sıfırdan teşhis ediliyor.
 
 ## 20 · Planlama mı, sabit graf mı
 
@@ -203,17 +203,17 @@ Bu slaytta 3 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
 
 `olculmus-sonuclar`
 
-Bu slaytta 4 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
+Bu slaytta 3 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
 
-Üç rakam. 1) LinkedIn SQL Bot en dürüst kaynak, çünkü kendi zayıf rakamını kendisi yayınlamış: yanıtların yalnızca yüzde elli üçü teknik olarak doğru, ama kullanıcıların yüzde doksan beşi geçer notu veriyor. 2) Ve en çok kullanılan özellik sorgu üretimi değil, sorgu patlayınca çıkan Fix with AI butonu, oturumların yüzde sekseni. Yani değer sıfırdan yazmakta değil, kırılanı onarmakta. Bu, birazdan göreceğiniz demonun tam olarak yaptığı şey. 3) Pinterest'te ilk seferde kabul oranı ikiye katlanmış ama hâlâ yarısından azı. 4) Kaynakları gösterin.
+Üç rakam. 1) LinkedIn SQL Bot en dürüst kaynak, çünkü kendi zayıf rakamını kendisi yayınlamış: yanıtların yalnızca yüzde elli üçü teknik olarak doğru, ama kullanıcıların yüzde doksan beşi geçer notu veriyor. 2) Ve en çok kullanılan özellik sorgu üretimi değil, sorgu patlayınca çıkan Fix with AI butonu, oturumların yüzde sekseni. Yani değer sıfırdan yazmakta değil, kırılanı onarmakta. Bu, birazdan göreceğiniz demonun tam olarak yaptığı şey. 3) Pinterest'te ilk seferde kabul oranı ikiye katlanmış ama hâlâ yarısından azı.
 
 ## 26 · METR randomize deneyi
 
 `metr`
 
-Bu slaytta 4 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
+Bu slaytta 3 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
 
-Acele etmeyin. 1) Alandaki tek randomize kontrollü deney, deneyimli geliştiricilerin AI ile yüzde on dokuz daha yavaş olduğunu buldu. 2) Asıl bulgu ikinci rakam: aynı geliştiriciler yüzde yirmi hızlandıklarını sanıyordu. 3) Çerçeveyi verin: bu, ajan kullanmayın demek değil; kendi algıladığınız kazancı kanıt sanmayın demek. Sezgi burada sistematik olarak yanılıyor ve yanılma yönü hep aynı: iyimser. 4) Kaynağı gösterin.
+Acele etmeyin. Kaynak altta duruyor: METR'in randomize kontrollü deneyi. 1) Deneyimli geliştiriciler AI ile yüzde on dokuz daha yavaş çıkmış. 2) Asıl bulgu ikinci rakam: aynı geliştiriciler yüzde yirmi hızlandıklarını sanıyordu. 3) Çerçeveyi verin: bu, ajan kullanmayın demek değil; kendi algıladığınız kazancı kanıt sanmayın demek. Sezgi burada sistematik olarak yanılıyor ve yanılma yönü hep aynı: iyimser.
 
 ## 27 · Beş risk
 
@@ -334,5 +334,7 @@ Ana hatta değil. Yalnızca bir kutucuğa tıklanırsa açılıyor.
 ## E1 · Ek: kullanmadığım istatistikler
 
 `istatistik-hijyeni-liste`
+
+Bu slaytta 1 adımlı açılım var: her Next tuşu bir maddeyi açıyor.
 
 Bu slayt bir dipnot değil, bir yöntem beyanı. Her satır, hazırlık sırasında birincil kaynağını arayıp bulamadığım ya da yanlış aktarıldığını gördüğüm bir istatistik. En öğretici olanı IBM örneği: her yerde dolaşan yüzde elli bir alarm hiç incelenmiyor rakamı raporun içinde yok, rapor yüzde kırk dokuzuna ulaşılabiliyor diyor. Elli bir, yüzden kırk dokuzun çıkarılmışı. Kapanışta şunu söyleyin: bir istatistiğin çok tekrarlanması, doğrulanmış olmasıyla aynı şey değildir.

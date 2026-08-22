@@ -15,8 +15,9 @@ slayt, artı yalnızca soru gelirse açılan 2 ek slayt.
 | III. Ne yapmalı | 23 - 38 | Riskler, guardrail'lar, nereden başlanır |
 
 Slaytların çoğu adım adım kuruluyor: aynı slayt numarasında kalıp her `→` bir
-bileşen ekliyor. Ana hattın tamamı 124 tıklama, yani 45 dakikada adım başına
-ortalama 22 saniye.
+bileşen ekliyor. Ana hattın tamamı 116 tıklama, yani 45 dakikada adım başına
+ortalama 23 saniye. Kaynak künyeleri adım değildir: slayt açılır açılmaz altta
+dururlar.
 
 ---
 
