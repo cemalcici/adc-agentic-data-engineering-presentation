@@ -54,9 +54,14 @@ konuşmacı notları ve geçen süre bulunur.
 
 | Tuş | Ne yapar |
 | --- | --- |
-| `→` / `Space` | Sonraki slayt ya da sonraki açılım maddesi |
-| `←` / `Backspace` | Geri |
+| `→` / `Space` | Sonraki adım, adımlar bitince sonraki slayt |
+| `←` / `Backspace` | Önceki adım, slaytın başındaysanız önceki slaytın son adımı |
 | `P` | Sunucu modunu aç |
+
+Geri tuşu adım farkındadır ve bu, paylaşılan bileşenin varsayılan davranışı
+değildir. Bileşenin `prev()` metodu doğrudan bir önceki slayta atlayıp onu ilk
+adımından açar, yani az önce kurduğunuz her şeyi baştan tıklatır. `index.html`
+içindeki kısa bir yama bunu düzeltir; ayrıntısı orada yorumda yazılı.
 
 Slaytların çoğunda adımlı açılım var: bu slaytlarda `→` slaytı değiştirmez,
 sıradaki bileşeni açar. Sayaç aynı numarada kalır. Konuşmacı notları da bu
@@ -126,6 +131,18 @@ lint yakalar.
 `npm run lint` iki uyarı verir: dosya uzun ve tek bir track'te 40 zamanlı öğe
 var. İkisi de bilinçli. Bu bir deck, sahneleri ayrı dosyalara bölmek onları
 sürüklenmeye açık hâle getirirdi.
+
+## Hareket
+
+Navigasyon bir seek'tir, yani oynatma değil tek kareye atlamadır. Bu yüzden deck
+iki katman kullanır. Kök zaman çizelgesi "T anında ekranda ne olmalı" sorusunu
+cevaplar ve her adım kendi anında tam açık olacak şekilde yerleştirilmiştir;
+nereye atlarsanız atlayın kare doğrudur. İkinci katman playhead'i izler ve ileri
+gidildiğinde o açılımı yeniden oynatır, yoksa her adım fotoğraf gibi belirirdi.
+
+İkinci katman tamamen kozmetiktir: kaldırırsanız deck yine doğru çalışır, sadece
+sert görünür. `?debug=layout` ile açıldığında zaten devre dışı kalır, çünkü
+denetim tek kareleri örnekler.
 
 ## Taşma denetimi
 
