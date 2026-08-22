@@ -159,10 +159,20 @@ Güvenli alan yeşil kesikli çerçeveyle, nav köşesi kırmızıyla çizilir; 
 geçen her öğe kırmızı konturla işaretlenir. Tarayıcı konsolundan
 `__hfAuditLayout()` çağırırsanız ihlallerin listesini döndürür.
 
-Aynı sayfada `__hfAuditAnchors()` ikinci bir kontrol yapar: bir SVG etiketi
-`text-anchor` özniteliği yazıp CSS onu ezdiğinde etiket yanlış yere hizalanır ve
-yanındaki şekle girer. Bu, güvenli alan ihlali sayılmadığı için gözle
-yakalanması gereken bir hatadır; denetleyici onu da listeler.
+Aynı sayfada iki kontrol daha var, ikisi de güvenli alanın göremediği hataları
+yakalar:
+
+- `__hfAuditAnchors()`: bir SVG etiketi `text-anchor` özniteliği yazıp CSS onu
+  ezdiğinde etiket yanlış yere hizalanır ve yanındaki şekle girer.
+- `__hfAuditSvgBoxes()`: bir etiket ait olduğu kutuya sığmıyorsa bildirir. Bir
+  etiketin kutusu, merkezini içeren en küçük dikdörtgendir; merkezi hiçbir
+  dikdörtgenin içinde olmayan etiketler (pipeline düğümlerinin altındaki
+  açıklamalar, barların yanındaki değerler) tasarım gereği serbesttir ve
+  denetlenmez. Taşma piksel cinsinden raporlanır.
+
+İkincisi merdivendeki gerçek bir hatadan sonra eklendi: dördüncü kutunun başlığı
+296 piksellik kutuda 363 piksel yer kaplayıp komşularının üstüne biniyordu, ve
+slaytın güvenli alanı içinde kaldığı için ilk denetimden temiz geçmişti.
 
 ## Yayınlamak
 

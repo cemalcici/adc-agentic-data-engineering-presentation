@@ -2410,8 +2410,58 @@
             return problems;
           };
 
+          // The safe area only knows the slide's edges, so a label that spills out
+          // of the shape it belongs to reads as correct to it. This is how the
+          // maturity ladder's fourth caption ran into its neighbours unnoticed.
+          //
+          // A label's owning shape is the smallest rect whose area contains the
+          // label's centre. A label whose centre falls outside every rect is
+          // free-floating by design (captions under a pipeline node, values beside
+          // a bar) and has no box to fit, so it is skipped rather than guessed at.
+          window.__hfAuditSvgBoxes = function () {
+            var problems = [];
+            scenes.forEach(function (scene, index) {
+              root.time(index * SCENE_SECONDS + 8, false);
+              Array.prototype.forEach.call(scene.el.querySelectorAll("svg"), function (svg) {
+                var boxes = Array.prototype.map.call(svg.querySelectorAll("rect"), function (rect) {
+                  return rect.getBoundingClientRect();
+                });
+                Array.prototype.forEach.call(svg.querySelectorAll("text"), function (text) {
+                  var tb = text.getBoundingClientRect();
+                  if (!tb.width || !tb.height) return;
+                  var cx = tb.left + tb.width / 2;
+                  var cy = tb.top + tb.height / 2;
+
+                  var owner = null;
+                  boxes.forEach(function (box) {
+                    if (cx < box.left || cx > box.right || cy < box.top || cy > box.bottom) return;
+                    if (!owner || box.width * box.height < owner.width * owner.height) owner = box;
+                  });
+                  if (!owner) return;
+
+                  var out = Math.max(
+                    owner.left - tb.left,
+                    tb.right - owner.right,
+                    owner.top - tb.top,
+                    tb.bottom - owner.bottom
+                  );
+                  if (out > 1) {
+                    text.classList.add("dbg-bad");
+                    problems.push({
+                      scene: scene.el.dataset.compositionId,
+                      text: (text.textContent || "").trim().slice(0, 34),
+                      overflowPx: Math.round(out)
+                    });
+                  }
+                });
+              });
+            });
+            return problems;
+          };
+
           window.__hfAuditLayout();
           window.__hfAuditAnchors();
+          window.__hfAuditSvgBoxes();
         }
       })();
     </script>
