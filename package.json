@@ -10,6 +10,8 @@
     "check": "npx --yes hyperframes@0.8.10 check ./composition",
     "serve": "python3 -m http.server 4173 --directory .",
     "notes": "node scripts/export-notes.mjs",
-    "serve:stop": "lsof -ti tcp:4173 | xargs -I{} kill {}"
+    "serve:stop": "lsof -ti tcp:4173 | xargs -I{} kill {}",
+    "renumber": "node scripts/renumber-scenes.mjs",
+    "fragments": "node scripts/sync-fragments.mjs"
   }
 }

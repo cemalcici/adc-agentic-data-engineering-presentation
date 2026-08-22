@@ -64,7 +64,7 @@
               10.7,
               11.2,
               11.6,
-              12.0
+              12
             ]
           },
           {
@@ -76,73 +76,128 @@
             ]
           },
           {
-            "sceneId": "bugun-kural",
-            "notes": "Salondaki herkesin işini tarif edin, ve saygıyla tarif edin. Kuralları haritanın üstüne tek tek yerleştireceksiniz. 1) Ingest'in altında freshness monitörü: tablo geç mi geldi. 2) Dönüşümün altında dbt testleri: not_null, unique, accepted_values. 3) Tablonun altında volume monitörü: satır sayısı saptı mı. 4) Dashboard'un altında alarm, runbook ve nöbetçi insan. 5) Kapanışı yapın: dördü de çalışan mühendislik, kimse burada yanlış bir şey yapmıyor. Sorun kalite değil, kapsam.",
+            "sceneId": "veri-pipeline-nedir",
+            "notes": "Salonun yarısı bu kelimeleri biliyor, yarısı bilmiyor. Bileni sıkmadan bilmeyeni içeri almanın yolu, şemayı bir kez ağır ağır kurmak. 1) Kaynak: verinin doğduğu yer, ve dikkat edin, genelde başka bir ekibin sahibi olduğu yer. Bu detay sunumun sonunda çok önemli olacak. 2) Ingest: veriyi oradan alıp kendi deponuza taşımak. 3) Dönüşüm: ham veriyi soruya cevap verebilir hale getirmek, yani hesaplamak ve birleştirmek. 4) Sunum: tablo ve grafik, yani birinin bakıp karar vereceği ekran. Şunu söyleyip geçin: bu şemayı sunum boyunca defalarca göreceksiniz, her seferinde başka bir yeri yanacak.",
             "fragments": [
               30.7,
               31.2,
               31.6,
-              32.0,
-              32.4,
-              32.8
+              32,
+              32.4
+            ]
+          },
+          {
+            "sceneId": "dataops-nedir",
+            "notes": "Şimdi ikinci kelimeyi kurun. Pipeline'ı kurmak bir iş, her gün çalışır tutmak bambaşka bir iş; DataOps ikincisinin adı. Yazılımdaki DevOps'un veri tarafındaki karşılığı diyebilirsiniz. 1) Döngüyü soldan sağa okuyun: planla, geliştir, test et, dağıt, işlet, izle. 2) Dönüş okunu gösterin: izlediğiniz şey size bir sonraki planı verir, yani döngü hiç bitmez. 3) Kapanışta sunumun yerini işaretleyin: bu sunum döngünün son iki adımıyla ilgili, işletmek ve izlemek. Çünkü bir pipeline'ın ömrünün neredeyse tamamı orada geçiyor, ve ilk dört adım zaten çok konuşuluyor.",
+            "fragments": [
+              40.7,
+              41.2,
+              41.6,
+              42
+            ],
+            "hotspots": [
+              {
+                "id": "h-sozluk-dataops-nedir",
+                "label": "Sözlük: sunumdaki terimler",
+                "target": "sozluk",
+                "region": {
+                  "x": 62,
+                  "y": 16,
+                  "w": 33,
+                  "h": 14
+                }
+              }
+            ]
+          },
+          {
+            "sceneId": "sdlc-bugun",
+            "notes": "Meraklı için zemin, profesyonel için hatırlatma. Hızlı gidin ama son cümleyi vurgulayın. 1) Kod bir depoda geçmişiyle durur, ve bir başkası değişikliği okuyup onaylar. 2) Otomatik testler insanın gözden kaçırdığını arar, sonra deneme ortamında gerçeğin kopyası üzerinde bir kez daha çalışır. 3) Ve production. 4) Bu zincirin adı SDLC, yani yazılım yaşam döngüsü. Şunu söyleyin ve akıllarında bırakın: ortada her zaman bir insan onayı var. Bu cümle sunumun sonundaki demoyu hazırlıyor.",
+            "fragments": [
+              50.7,
+              51.2,
+              51.6,
+              52,
+              52.4
+            ]
+          },
+          {
+            "sceneId": "sdlc-veri-farki",
+            "notes": "Bu slayt sunumun gizli kilit taşı, o yüzden acele etmeyin. 1) Yazılımda hata yaparsanız eski sürüme dönersiniz ve birkaç dakika içinde her şey eski hâline gelir; hatanın ömrü, onu fark etme sürenizdir. 2) Veride öyle değil. Kodu geri alırsınız ama yanlış veri çoktan yazılmıştır; o veriyle rapor çıkmış, karar verilmiş, belki müşteriye e-posta gitmiştir. Hatanın ömrü artık o kararların ömrüdür. 3) Sonucu söyleyin: bu yüzden veri tarafında onay kapısı yazılımdakinden daha değerlidir. On beş dakika sonra göreceğiniz demonun merkezinde de tam olarak bu kapı duruyor.",
+            "fragments": [
+              60.7,
+              61.2,
+              61.6,
+              62
+            ]
+          },
+          {
+            "sceneId": "bugun-kural",
+            "notes": "Salondaki herkesin işini tarif edin, ve saygıyla tarif edin. Kuralları haritanın üstüne tek tek yerleştireceksiniz. 1) Ingest'in altında freshness monitörü: tablo geç mi geldi. 2) Dönüşümün altında dbt testleri: not_null, unique, accepted_values. 3) Tablonun altında volume monitörü: satır sayısı saptı mı. 4) Dashboard'un altında alarm, runbook ve nöbetçi insan. 5) Kapanışı yapın: dördü de çalışan mühendislik, kimse burada yanlış bir şey yapmıyor. Sorun kalite değil, kapsam.",
+            "fragments": [
+              70.7,
+              71.2,
+              71.6,
+              72,
+              72.4,
+              72.8
             ]
           },
           {
             "sceneId": "kuralin-varsayimi",
             "notes": "Perdenin tezi burada, acele etmeyin. 1) Redyuk ve arkadaşlarının cümlesini yüksek sesle okuyun: elle yazılan kod pipeline'a geriye dönük ekleniyor, yani gözlenmiş hata tipini gelecekte yakalamak için. Kural her zaman olaydan sonra yazılır. Bu hakemli bir kaynak, satıcı broşürü değil. 2) Google TFX alıntısına geçin ve şunu vurgulayın: kuralları en büyük ölçekte işleten ekip, kural kümesinin eksiksiz olabileceği iddiasını kendisi reddediyor. Salona bir soru bırakın: geçen ay yaşadığınız en kötü veri olayının önceden yazılmış bir kuralı var mıydı?",
             "fragments": [
-              40.7,
-              41.2,
-              41.6
+              80.7,
+              81.2,
+              81.6
             ]
           },
           {
             "sceneId": "gurultu",
             "notes": "Üç rakam, sırayla. Kaynaklar altta zaten duruyor; açılışta bir kez söyleyin: bunlar satıcı anketi değil, hakemli akademik çalışmaların üretim ölçümü. 1) Microsoft'un Skype ve Teams alarmlarını dört ay boyunca üretimde ölçtüğü Lumos çalışmasında, alarmların yüzde doksanından fazlası hiç çıkmamalıymış. Metrik bazında yüzde doksan ile doksan sekiz virgül iki arasında. 2) Tencent'in çalışmasında tek bir sistemde elli dokuz bin altı yüz yedi aktif alarm kuralı sayılmış. 3) En can alıcısı: bazı sistemler hiç arıza yaşamadan günde on binlerce alarm üretiyor.",
             "fragments": [
-              50.7,
-              51.2,
-              51.6,
-              52.0
+              90.7,
+              91.2,
+              91.6,
+              92
             ]
           },
           {
             "sceneId": "kural-curumesi",
             "notes": "Kural envanteri bakım ister ve bu bakımın maliyeti görünmezdir. Kaynaklar altta duruyor: Monte Carlo tarafı satıcı telemetrisi, Google tarafı hakemli. 1) Kural tabanlı monitörler anomali tespitine göre yaklaşık yüzde kırk daha fazla bakım dokunuşu istiyor. 2) Haftada elli alarmı geçen bir kanalda etkileşim yüzde on beş düşüyor, yüzü geçince yüzde yirmi daha. Burada salona sorun: kaç kişinin susturulmuş bir alarm kanalı var? Eller kalkar, ve o eller sizin argümanınızdır. 3) Aynı olgu CI tarafında da var: testlerin yalnızca yüzde bir virgül yirmi üçü ömrü boyunca bir kırılma bulmuş.",
             "fragments": [
-              60.7,
-              61.2,
-              61.6,
-              62.0
+              100.7,
+              101.2,
+              101.6,
+              102
             ]
           },
           {
             "sceneId": "kok-neden",
             "notes": "Burada dürüstlük yapacaksınız, çünkü bu slayt kendi demonuzu zorluyor. 1) Grafiğin tamamını açın ve yukarıdan aşağı okuyun: pipeline çalıştırma hataları yüzde yirmi altı virgül iki, gerçek dünya değişimi yüzde yirmi, ingestion kesintileri yüzde on altı virgül altı, platform kararsızlığı yüzde on beş virgül iki, kasıtlı değişiklikler yüzde on dört virgül iki, ve şema kayması yalnızca yüzde yedi virgül sekiz. Renkleri gösterin: amber olanlar aslında olay değil, yeşil olan demonun kullandığı sınıf. 2) Son satırı açın ve iki şeyi birden söyleyin: amber olanların toplamı yüzde otuz dört, yani ekibiniz zamanının üçte birini olmayan bir problemi kovalıyor. Ve yeşil dilim onaltıda bir; demoda şema kayması kullanıyoruz çünkü en temiz gösterilebilir olan o, en yaygın olan değil. Saklamayın, tam tersine öne çıkarın.",
             "fragments": [
-              70.7,
-              71.2,
-              71.6
+              110.7,
+              111.2,
+              111.6
             ]
           },
           {
             "sceneId": "insan-faturasi",
             "notes": "Fatura sistemin değil, nöbetteki insanın üstünde birikiyor. Kaynak altta duruyor ve satıcı anketi olduğunu kendiniz söyleyin, çünkü bir sonraki slayt zaten o freni çekiyor. Freni siz çekerseniz salondaki şüpheci çekmek zorunda kalmaz. 1) Ayda altmış yedi olay. 2) Olay başına ortalama on beş saat. 3) Ve en acı rakam: olayların yüzde yetmiş dördünde sorunu iş tarafı veri ekibinden önce fark ediyor.",
             "fragments": [
-              80.7,
-              81.2,
-              81.6,
-              82.0
+              120.7,
+              121.2,
+              121.6,
+              122
             ]
           },
           {
             "sceneId": "durustluk-freni",
             "notes": "Bu slayt sunumun güvenilirliğini taşıyor. 1) Satıcı anketlerinin nasıl çalıştığını anlatın: soru çözümün var olduğu yeri işaret eder, örneklem de o çözümü satın alabilecek kurumlardan seçilir. 2) Sonra SANS'i açın: satıcı olmayan, dört yüz üç katılımcılı ankette alarm aşırı yükünü en büyük engel sayanlar yalnızca yüzde dört virgül altı. Aynı olgu, iki farklı soru, iki farklı dünya. 3) Perdenin tezini söyleyin: sorun kuralların yanlış olması değil, kuralın kapsayamadığı alanın kural yazma hızınızdan hızlı büyümesi. Vaktiniz varsa sağ alttaki kutucuğa tıklayıp kullanmadığım istatistikler slaytını açabilirsiniz.",
             "fragments": [
-              90.7,
-              91.2,
-              91.6,
-              92.0
+              130.7,
+              131.2,
+              131.6,
+              132
             ],
             "hotspots": [
               {
@@ -162,224 +217,218 @@
             "sceneId": "uc-evre",
             "notes": "Kısa tutun, bu bir geçiş slaytı. 1) Otomasyon: low-code araçlar manuel script'lerin yerini aldı, ne yapılacağına hâlâ insan karar veriyor. 2) Asistanlık: copilot'lar yazma hızını artırdı ama direksiyon insanda kaldı. 3) Otonomi: ajan hedefi alır, adımları planlar, çalıştırır ve kendi işini doğrular. Öğrenciler için net söyleyin, üçüncü evre yeni ve henüz kanıtlanmamış.",
             "fragments": [
-              100.7,
-              101.2,
-              101.6,
-              102.0
+              140.7,
+              141.2,
+              141.6,
+              142
             ]
           },
           {
             "sceneId": "copilot-ajan",
             "notes": "Tek cümlelik farkı önce söyleyin. 1) Copilot tarafı: bağlamı siz taşırsınız, çalıştırmaz, doğrulamaz, ve hata sizin hatanızdır çünkü kodu siz yazdınız. 2) Ajan tarafı: bağlamı kendi toplar, araç çağırır, çalıştırır ve kendi işini doğrular; hata artık sizin onayınızdır. 3) Kapanış: bu bir hız farkı değil, sorumluluğun yer değiştirmesi. Bu ayrımı burada kurun, çünkü guardrail bölümünün tamamı bunun üzerine oturuyor.",
             "fragments": [
-              110.7,
-              111.2,
-              111.6,
-              112.0
+              150.7,
+              151.2,
+              151.6,
+              152
             ]
           },
           {
             "sceneId": "niyet-odakli",
             "notes": "1) Örneği yüksek sesle okuyun, çünkü örneğin kendisi argümandır: Stripe abonelik olaylarını depoya al, event ID'ye göre tekilleştir, tarihe göre partition'la. Bu bir şartname; kod değil, pseudo-kod da değil. 2) Zihinsel modeli verin: makine hızında çalışan ve test yazmayı asla unutmayan bir junior mühendisin pull request'ini incelemek. Hızlıdır, çok iş yapar, ve sınırlara ihtiyacı vardır.",
             "fragments": [
-              120.7,
-              121.2,
-              121.6
+              160.7,
+              161.2,
+              161.6
             ]
           },
           {
             "sceneId": "neden-simdi",
             "notes": "Dört madde, hızlı gidin ama dördüncüde durun. 1) Modeller artık araç çağırabiliyor, sadece metin üretmiyor. 2) Ajan çerçeveleri bir nokta sıfır seviyesine geldi: LangGraph ekim iki bin yirmi beş, Microsoft Agent Framework nisan iki bin yirmi altı. 3) MCP bir satıcı özelliği olmaktan çıkıp standart oldu; Anthropic aralık iki bin yirmi beşte Linux Foundation'a bağışladı. 4) Ve talep. Ekiplerin yüzde yetmiş ikisi AI destekli kod yazmayı önceliklendiriyor, ama yalnızca yüzde yirmi dördü AI destekli pipeline yönetimini. Boşluk tam burada, ve bu sunum o boşluğun içinde duruyor. Kaynak altta: dbt Labs anketi, üç yüz altmış üç katılımcı.",
             "fragments": [
-              130.7,
-              131.2,
-              131.6,
-              132.0,
-              132.4
+              170.7,
+              171.2,
+              171.6
+            ]
+          },
+          {
+            "sceneId": "kapsam-haritasi",
+            "notes": "Bu slayt 'niye sadece bir konu anlatıyorsun' sorusunun cevabı, o yüzden atlamayın. 1) İlk dört işi okuyun: pipeline üretimi, veri kalitesi izleme, dokümantasyon ve test üretimi, alarm triyajı. 2) Kalan üçü: kök neden analizi, düz cümleden sorgu yani text-to-SQL, ve kırılanı onarma. 3) Sonra demonun yerini işaretleyin: bugün yedincisini canlı göstereceğiz. Ama şunu ekleyin, çünkü sunumun tamamını bir arada tutan cümle bu: yedisinin de altında aynı mekanizma var, ve sunumun geri kalanı o mekanizmayı anlatıyor. Yani tek bir kutuyu değil, kutuların hepsini çalıştıran motoru konuşacağız.",
+            "fragments": [
+              180.7,
+              181.2,
+              181.6,
+              182
             ]
           },
           {
             "sceneId": "perde-2",
             "notes": "İkinci perde. Artık soru neden değil, nasıl. 1) Harita geri geliyor ama bu kez dönüşüm kutusu yanıyor ve yukarıdan bir ok iniyor: ajan buraya bakıyor. Alttaki kural katmanının hâlâ orada durduğunu da gösterin, çünkü onu kaldırmıyoruz. Bu perdede ajanın içini açacağız: döngü, bağlam, doğrulayıcı, hafıza, planlama, iz ve determinizm.",
             "fragments": [
-              140.7,
-              141.2
+              190.7,
+              191.2
             ]
           },
           {
             "sceneId": "ajan-dongusu",
             "notes": "Sunumun merkez diyagramı. Yavaş anlatın, çünkü sonraki altı slayt bu diyagramın üzerine katman biniyor. 1) Döngü çiziliyor: model akıl yürütür, araç çağrısı seçer, araç çalışır, sonuç bağlama girer, ve baştan. Bir ajan düşünen bir program değil; çıkış koşulu modelin araç çağırmayı bırakması olan bir döngü. 2) Kesikli kutuyu gösterin: araçlar sizin kodunuz. Ajanın yapabileceği her şey, sizin ona verdiğiniz fonksiyonların toplamıdır, bir fazlası değil. 3) Dört meşru çıkışı okuyun. Amber olan ikisi bu sunumun geri kalanının konusu: doğrulayıcının yeşil yanması ve insan kapısı.",
             "fragments": [
-              150.7,
-              151.2,
-              151.6,
-              152.0
+              200.7,
+              201.2,
+              201.6,
+              202
             ]
           },
           {
             "sceneId": "grounding",
             "notes": "Halüsinasyonu doğru tanımlayın; öğrenciler için en değerli slayt bu olabilir. Model şemayı bilmiyorsa uydurmuyor, en olası şemayı yazıyor, ve en olası şema çoğu zaman sizinkine çok benzediği için hata gözden kaçıyor. 1) Kaynağın altında canlı şema: kod ne diyorsa değil, veritabanı ne diyorsa. 2) Dönüşümün altında lineage: neyin neyi kırdığı. 3) Tablonun altında çalıştırma logu: tahmin değil kanıt. 4) Kapanış: halüsinasyon bir model arızası değil, boş bırakılmış bir bağlam alanı. Çözüm daha akıllı model değil, daha dolu bağlam.",
             "fragments": [
-              160.7,
-              161.2,
-              161.6,
-              162.0,
-              162.4
+              210.7,
+              211.2,
+              211.6,
+              212,
+              212.4
             ]
           },
           {
             "sceneId": "self-correction",
             "notes": "Sunumun en pratik cümlesi burada. 1) Döngüyü gösterin: üret, doğrula, hatayı oku, yeniden üret. Doğrulayıcı ucuz ve deterministik olmalı, çünkü pahalıysa ajan onu yeterince sık çalıştıramaz. 2) Çıkışı gösterin: iki denemede olmazsa ajan açıklamayla unfixable diyerek temiz çıkar. 3) Somut örneği anlatın: demodaki sistem önce yalnızca SQL parse etmeyi denedi, ama var olmayan bir kolonu okuyan bir view tertemiz parse ediyor. Yani yanlış doğrulayıcı size yeşil ışık verir. Bu yüzden doğrulayıcı gerçek derlemeye yükseltildi. Kapanış cümlesi: dbt compile'ınız yoksa, ajanınız da yoktur.",
             "fragments": [
-              170.7,
-              171.2,
-              171.6,
-              172.0
+              220.7,
+              221.2,
+              221.6,
+              222
             ]
           },
           {
             "sceneId": "hafiza",
             "notes": "Hafıza sezgiye aykırı bir takas. Kaynak altta duruyor ve birinci taraf olduğunu belirtin; Anthropic kendi iç ajanı hakkında yazmış. 1) Bakımlı bağlamla doğruluk yüzde doksan beş. 2) Bakımsız bırakıldıktan bir ay sonra yaklaşık yüzde altmış beşe düşüyor. Hafıza hızlandırır ve tam olarak aynı oranda eskitir: dün doğru olan cevabı, bugün değişmiş bir sistem hakkında aynı özgüvenle tekrarlar. 3) Demodaki tercihi söyleyin: hafıza bilerek yok, her olay sıfırdan teşhis ediliyor.",
             "fragments": [
-              180.7,
-              181.2,
-              181.6,
-              182.0
+              230.7,
+              231.2,
+              231.6,
+              232
             ]
           },
           {
-            "sceneId": "planlama",
-            "notes": "Otonomi bir övgü değil, bir hasar yarıçapı ölçüsüdür. 1) Planlayıcı ne yapılacağına kendisi karar verir, adım sırası çalışma zamanında oluşur, ve hasar yarıçapı geniş ve önceden bilinemez. 2) Uygulayıcı ise bilinen bir problemin neye ihtiyacı olduğunu çözer; adımlar önceden yazılmış bir graftan geçer ve hasar yarıçapı dar. 3) Kapanış: doğru soru gerçekten plan yapıyor mu değil, planı yanlış çıkarsa neye dokunabilir. Demodaki sistem bilerek uygulayıcı yarısında duruyor.",
+            "sceneId": "otonomi-siniri",
+            "notes": "Bu slayt iki eski slaytın birleşimi, o yüzden tek bir fikirde toplayın: otonomi bir övgü değil, bir hasar ölçüsü. 1) Geniş yetkili ajan ne yapacağına kendisi karar verir, ve yanılırsa nereye dokunacağı önceden bilinemez. 2) Dar yetkili ajan bilinen bir problemin çözümünü üretir, adımları önceden bellidir, yanılırsa hasarın sınırı da bellidir. Demodaki sistem bilerek burada duruyor. 3) Sınırın nasıl konduğunu okuyun: onaysız yazma yok, derlenmeyen öneri sunulmaz, bütçe aşılmaz, her koşu iz bırakır. Kritik cümle şu: dördü de modelin ne cevap verdiğinden bağımsız olarak doğrulanabilir. Bu yüzden ajanın testi, modelin testi değildir.",
             "fragments": [
-              190.7,
-              191.2,
-              191.6,
-              192.0
+              240.7,
+              241.2,
+              241.6,
+              242
             ]
           },
           {
             "sceneId": "gozlemlenebilirlik",
             "notes": "1) Trace'i olmayan ajan hata ayıklanamaz, eval'i olmayan ajan iyileştirilemez; ikisi de yoksa elinizde bir sistem değil, iyi giden bir demo vardır. 2) Sonra kendi hatanızı anlatın, çünkü bu hikaye sizi dürüst gösterir: spesifikasyon ajanın takılmasını açıkça yasaklıyordu, test yeşildi, ve ajan her geçişte doksan saniye takılıyordu. Çünkü test ajan hayatta kaldı mı diye soruyordu, ne kadar sürdü diye değil. 3) Kapanış: eval'iniz sorduğunuz soru kadar iyidir.",
             "fragments": [
-              200.7,
-              201.2,
-              201.6,
-              202.0
-            ]
-          },
-          {
-            "sceneId": "determinizm",
-            "notes": "Perdenin kapanışı, kısa tutun. 1) Onaysız hiçbir yazma gerçekleşmez. 2) Derlenmeyen hiçbir aday insana sunulmaz. 3) Bütçe aşılmaz, döngü her koşulda sonlanır. 4) Her koşu iz bırakır, hiçbir karar sessiz değildir. 5) Kapanış: dördü de modelin ne cevap verdiğinden tamamen bağımsız olarak doğrulanabilir. Bu yüzden ajanın testi, modelin testi değildir.",
-            "fragments": [
-              210.7,
-              211.2,
-              211.6,
-              212.0,
-              212.4,
-              212.8
+              250.7,
+              251.2,
+              251.6,
+              252
             ]
           },
           {
             "sceneId": "perde-3",
             "notes": "Üçüncü perde ve tonu değiştirin: savunmadan değerlendirmeye geçiyorsunuz. 1) Harita son kez geliyor, bu kez dönüşümün üstünde insan onay kapısı duruyor. Bu perdede riskleri, guardrail'ları ve nereden başlanacağını konuşacağız, sonra da o kapıyı canlı göreceksiniz.",
             "fragments": [
-              220.7,
-              221.2
+              260.7,
+              261.2
             ]
           },
           {
             "sceneId": "hype-cycle",
             "notes": "1) Eğri çiziliyor ve tepe noktasında duruyoruz: Gartner ilk bağımsız Agentic AI Hype Cycle'ını nisan iki bin yirmi altıda yayınladı, konum Peak of Inflated Expectations. 2) Eğrinin devamını gösterin: hayal kırıklığı çukuru ve verimlilik platosu daha önümüzde. 3) Yüzde kırk rakamını verin ve kritik nüansı söyleyin: iptal sebepleri model yetersizliği değil; maliyet, belirsiz iş değeri ve zayıf risk kontrolü. Yani hepsi düzeltilebilir yönetim problemleri.",
             "fragments": [
-              230.7,
-              231.2,
-              231.6,
-              232.0
+              270.7,
+              271.2,
+              271.6,
+              272
             ]
           },
           {
             "sceneId": "olculmus-sonuclar",
             "notes": "Üç rakam. 1) LinkedIn SQL Bot en dürüst kaynak, çünkü kendi zayıf rakamını kendisi yayınlamış: yanıtların yalnızca yüzde elli üçü teknik olarak doğru, ama kullanıcıların yüzde doksan beşi geçer notu veriyor. 2) Ve en çok kullanılan özellik sorgu üretimi değil, sorgu patlayınca çıkan Fix with AI butonu, oturumların yüzde sekseni. Yani değer sıfırdan yazmakta değil, kırılanı onarmakta. Bu, birazdan göreceğiniz demonun tam olarak yaptığı şey. 3) Pinterest'te ilk seferde kabul oranı ikiye katlanmış ama hâlâ yarısından azı.",
             "fragments": [
-              240.7,
-              241.2,
-              241.6,
-              242.0
+              280.7,
+              281.2,
+              281.6,
+              282
             ]
           },
           {
             "sceneId": "metr",
             "notes": "Acele etmeyin. Kaynak altta duruyor: METR'in randomize kontrollü deneyi. 1) Deneyimli geliştiriciler AI ile yüzde on dokuz daha yavaş çıkmış. 2) Asıl bulgu ikinci rakam: aynı geliştiriciler yüzde yirmi hızlandıklarını sanıyordu. 3) Çerçeveyi verin: bu, ajan kullanmayın demek değil; kendi algıladığınız kazancı kanıt sanmayın demek. Sezgi burada sistematik olarak yanılıyor ve yanılma yönü hep aynı: iyimser.",
             "fragments": [
-              250.7,
-              251.2,
-              251.6,
-              252.0
+              290.7,
+              291.2,
+              291.6,
+              292
             ]
           },
           {
             "sceneId": "bes-risk",
             "notes": "Hızlı gidin, bunlar sezgisel. 1) Üretilen kod derlenebilir ve yine de yanlış olabilir. 2) Ajan hassas veriye, yasak olduğunu bilmediği için değil, kimse engellemediği için dokunur. 3) Maliyet olay başına değil döngü başına birikir; bu yüzden tahminler iki üç katı aşılabiliyor. 4) Trace yoksa geçen sefer neden öyle yaptı sorusunun cevabı yoktur. 5) Ve insan onayı geçici bir çözüm değil, sektörün bugün fiilen durduğu yer.",
             "fragments": [
-              260.7,
-              261.2,
-              261.6,
-              262.0,
-              262.4,
-              262.8
+              300.7,
+              301.2,
+              301.6,
+              302
             ]
           },
           {
             "sceneId": "guardrail",
             "notes": "Guardrail prompt'ta değil IAM'de yaşar. Kişisel bilgi sütunlarını sorgulama kuralı bir erişim politikasında olmalı, prompt penceresinde değil, çünkü prompt penceresindeki kural ikna edilebilir bir kuraldır. 1) Explain and Confirm: ajan taslağı ve gerekçesini sunar, insan onaylar. En yavaş, en güvenli. 2) Override: ajan hareket eder, insan veto edebilir; geri alınabilir işler için. 3) Sandbox and Deploy: ajan izole bir dalda test eder, sonuç incelenip taşınır.",
             "fragments": [
-              270.7,
-              271.2,
-              271.6,
-              272.0
+              310.7,
+              311.2,
+              311.6,
+              312
             ]
           },
           {
             "sceneId": "guardrail-katman",
             "notes": "Salondaki kural bazlı ekiplere verdiğiniz asıl cevap burada, o yüzden tane tane konuşun. 1) Alttaki kural katmanını gösterin: bilineni yakalar ve yerinde kalır. Kimse bunu kaldırmıyor. 2) Üstteki ajan katmanını gösterin: kuralın yazılmadığı yeri karşılar. 3) Kapanışı söyleyin: son on yılda yazdığınız testler çöpe gitmiyor, tam tersine ajanın doğrulayıcısı oluyor. Deterministik kararlar kural motorunda kalır.",
             "fragments": [
-              280.7,
-              281.2,
-              281.6,
-              282.0
+              320.7,
+              321.2,
+              321.6,
+              322
             ]
           },
           {
             "sceneId": "merdiven",
             "notes": "Beş basamak, ve her basamakta tek soru: burada en kötü sonuç nedir? 1) İzle: yalnızca okur, en kötü sonuç kötü bir öneri. 2) Öner: teşhis ve düzeltme adayı üretir ama uygulamaz, en kötü sonuç boşa giden bir inceleme. 3) Sandbox: izole bir dalda uygular, en kötü sonuç bozuk bir dal. 4) Onayla uygula: insan onayından sonra üretime yazar; en kötü sonuç sizin onayladığınız bir hata. Demoda göreceğiniz sistem burada. 5) Otonom: onay kapısı yok, en kötü sonuç sessiz bir hata. 6) Kapanış: çoğu ekip iki ve üçte ciddi değer buluyor ve beşe hiç geçmesi gerekmiyor.",
             "fragments": [
-              290.7,
-              291.2,
-              291.6,
-              292.0,
-              292.4,
-              292.8,
-              293.2
+              330.7,
+              331.2,
+              331.6,
+              332,
+              332.4,
+              332.8,
+              333.2
             ]
           },
           {
             "sceneId": "nereden-baslanir",
             "notes": "Salondan çıkarken akıllarında kalmasını istediğiniz pratik slayt bu. 1) Dokümantasyon ve test üretimi: geri alınabilir ve kalitesi anında görülebilir. 2) Alarm triyajı: bu alarm neden çıktı, ilgili mi sorusunu ön cevaplar, insan kararı yerinde kalır. 3) Kök neden ön analizi: lineage'i gezip hipotez listesi çıkarır, yanılırsa maliyeti bir dakikalık okuma. 4) Uyarıyı yapın: ajanın vaadi daha akıllı alarm olamaz, çünkü otomatik anomali tespiti de vakaların çoğunda yanlış alarm üretiyor. Vaat, teşhis ve doğrulama döngüsünün kendisidir.",
             "fragments": [
-              300.7,
-              301.2,
-              301.6,
-              302.0,
-              302.4
+              340.7,
+              341.2,
+              341.6,
+              342,
+              342.4
             ]
           },
           {
             "sceneId": "ekosistem",
             "notes": "1) Altı kategoriyi hızlıca geçin ve ürün ismi ezberletmeye çalışmayın. Kategoriler kalıyor, isimler değişiyor. 2) Sonra bunu açıkça söyleyin: bu slayt altı ay sonra yanlış olacak. Sadece bu sunumu hazırlarken altı iddia çürüdü; bir satıcı veri mühendisliğinden tamamen pivot etmişti, bir ürünün adı değişmişti, iki ürünün olgunluk seviyesi yanlıştı. Detaylı tabloyu isteyen olursa sağdaki kutucuğa tıklayıp açabilirsiniz.",
             "fragments": [
-              310.7,
-              311.2,
-              311.6
+              350.7,
+              351.2,
+              351.6
             ],
             "hotspots": [
               {
@@ -399,57 +448,70 @@
             "sceneId": "olcum",
             "notes": "1) Dört metriği okuyun: öneri kabul oranı, incelemede red oranı, olay başına token maliyeti, olay başına çözüm süresi. Ajanlı ve ajansız aynı olay sınıfında karşılaştırın. 2) Üç eşiği verin. Red oranı düşüyorsa otonomiyi bir basamak artırın. Token maliyeti tahmini iki katı aşarsa kapsamı daraltın. Yönetişim sahibi ya da net bir ROI metriği yoksa production'a hiç geçmeyin. Sonuncusu en çok ihmal edilen madde, üstünde bir saniye fazla durun.",
             "fragments": [
-              320.7,
-              321.2,
-              321.6
+              360.7,
+              361.2,
+              361.6
             ]
           },
           {
             "sceneId": "kanit-boslugu",
             "notes": "Kavram bölümünün dürüst kapanışı. 1) Zinciri soldan sağa okuyun: şema kayması, teşhis, öneri, derleme kanıtı, insan onayı, yeşil. Amber olan kutuyu gösterin: sektör orada duruyor. 2) Sonra şunu söyleyin: bu zincirin tamamını üretimde çalıştırıp ölçtüğünü yayınlayan bir şirket bulamadık. Parçaları yayınlanmış, tamamı ve ölçümü yayınlanmamış. Bunu bir zayıflık gibi değil bir konum gibi söyleyin, ve devam edin: şimdi size tam olarak orayı göstereceğim.",
             "fragments": [
-              330.7,
-              331.2,
-              331.6
+              370.7,
+              371.2,
+              371.6
             ]
           },
           {
             "sceneId": "demo-koprusu",
             "notes": "Demoya geçiş. Haritayı son kez kullanıyorsunuz. 1) Kaynakta bir kolonun adı değişiyor ve dönüşüm kırılıyor. Veri hâlâ iyi görünüyor, kimse bildirmiyor. 2) Ajan devreye giriyor: canlı kaynağı ve transformation'ı okuyup teşhis koyuyor, düzeltmeyi üretiyor ve derleyerek kanıtlıyor. 3) Ve duruyor. Onay bekliyor. 4) Merdivendeki yeri söyleyin: dördüncü basamak, öner artı onaylanmış değişiklik. Otonom değil, ve bu bir eksiklik değil bir tercih.",
             "fragments": [
-              340.7,
-              341.2,
-              341.6,
-              342.0,
-              342.4
+              380.7,
+              381.2,
+              381.6,
+              382,
+              382.4
             ]
           },
           {
             "sceneId": "demo-ne-var-ne-yok",
             "notes": "Bu slayt sizi soru turunda kurtaracak, atlamayın. 1) Olmayanlar: uzun vadeli hafıza yok, her olay sıfırdan teşhis ediliyor. Planlama yok, adımlar sabit bir graf, yani planlayıcı uygulayıcı ayrımının hasar yarıçapı küçük olan yarısı. MCP yok, Airflow ve Postgres'e sıradan istemci kütüphaneleriyle ulaşıyor; iki aracı olan tek bir ajan için MCP gösterilebilir karşılığı olmadan iki servis ekliyordu. Üçünün de yazılı gerekçesi var. 2) Olanlar: canlı şemadan kanıt, gerçek derlemeyle doğrulama, iki kez kendini düzeltme, çözemezse açıklamalı kapanış, insan onay kapısı, uçtan uca trace ve olay başına bir centin altında maliyet. 3) Kapanış: bunlar eksiklik değil, merdivende bilerek bir basamak geride durmak. Kapıyı kaldırmak için gereken her şey mevcut; eksik olan güven, ve güven de önce bu basamakta çalıştırarak kazanılıyor.",
             "fragments": [
-              350.7,
-              351.2,
-              351.6,
-              352.0
+              390.7,
+              391.2,
+              391.6,
+              392
             ]
           },
           {
             "sceneId": "demo-ne-izleyin",
             "notes": "Tek cümle söyleyin ve ekranı bırakın. 1) İzlemenizi istediğim tek bir an var: ajanın durduğu ve sizden onay beklediği an. Çünkü bu sistemin zor kısmı düzeltmeyi bulmak değil, bulduktan sonra kendiliğinden uygulamamak. Sonra demoya geçin.",
             "fragments": [
-              360.7,
-              361.2
+              400.7,
+              401.2
             ]
           },
           {
             "sceneId": "kaynakca",
             "notes": "Kapanış slaytı, ekranda bırakıp soruları alın. 1) Hakemli kaynaklar. 2) Satıcı kaynakları, hepsi etiketli. 3) Slaytlar, konuşmacı notları ve kaynakçanın tamamı sunum reposunda; hazırlarken kullanmadığım, çok dolaşan ama birincil kaynağı doğrulanamayan istatistiklerin gerekçeli listesi de orada.",
             "fragments": [
-              370.7,
-              371.2,
-              371.6,
-              372.0
+              410.7,
+              411.2,
+              411.6,
+              412
+            ],
+            "hotspots": [
+              {
+                "id": "h-sozluk-kaynakca",
+                "label": "Sözlük: sunumdaki terimler",
+                "target": "sozluk",
+                "region": {
+                  "x": 62,
+                  "y": 16,
+                  "w": 33,
+                  "h": 14
+                }
+              }
             ]
           }
         ],
@@ -470,11 +532,17 @@
             "slides": [
               {
                 "sceneId": "istatistik-hijyeni-liste",
-                "notes": "Bu slayt bir dipnot değil, bir yöntem beyanı. Her satır, hazırlık sırasında birincil kaynağını arayıp bulamadığım ya da yanlış aktarıldığını gördüğüm bir istatistik. En öğretici olanı IBM örneği: her yerde dolaşan yüzde elli bir alarm hiç incelenmiyor rakamı raporun içinde yok, rapor yüzde kırk dokuzuna ulaşılabiliyor diyor. Elli bir, yüzden kırk dokuzun çıkarılmışı. Kapanışta şunu söyleyin: bir istatistiğin çok tekrarlanması, doğrulanmış olmasıyla aynı şey değildir.",
-                "fragments": [
-                  390.7,
-                  391.2
-                ]
+                "notes": "Bu slayt bir dipnot değil, bir yöntem beyanı. Her satır, hazırlık sırasında birincil kaynağını arayıp bulamadığım ya da yanlış aktarıldığını gördüğüm bir istatistik. En öğretici olanı IBM örneği: her yerde dolaşan yüzde elli bir alarm hiç incelenmiyor rakamı raporun içinde yok, rapor yüzde kırk dokuzuna ulaşılabiliyor diyor. Elli bir, yüzden kırk dokuzun çıkarılmışı. Kapanışta şunu söyleyin: bir istatistiğin çok tekrarlanması, doğrulanmış olmasıyla aynı şey değildir."
+              }
+            ]
+          },
+          {
+            "id": "sozluk",
+            "label": "Sözlük",
+            "slides": [
+              {
+                "sceneId": "sozluk",
+                "notes": "Yalnızca soru gelirse açın, ya da sunum başında 'takıldığınız bir kelime olursa burada' diye bir kez gösterin. On iki terim, hepsi tek cümle. En sık sorulanlar lineage ve şema kayması."
               }
             ]
           }

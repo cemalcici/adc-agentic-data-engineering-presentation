@@ -5,19 +5,30 @@ sunum. Ana argüman şu: sorun kuralların yanlış olması değil, kuralın
 kapsayamadığı alanın kural yazma hızından daha hızlı büyümesi. Agentic yaklaşım
 kural bazlıyı yok etmiyor, üstüne bir katman ekliyor.
 
-**Şekli:** 45 dakika sunum, ardından 15 dakika canlı demo. Üç perde, 38 ana
-slayt, artı yalnızca soru gelirse açılan 2 ek slayt.
+**Şekli:** 45 dakika sunum, ardından 15 dakika canlı demo. Üç perde, 42 ana
+slayt, artı yalnızca soru gelirse açılan 3 ek slayt.
 
 | Perde | Slayt | Soru |
 | --- | --- | --- |
-| I. Neden değişmeli | 3 - 14 | Kuralı nereye koyuyoruz, nereye yetişemiyor |
-| II. Nasıl çalışıyor | 15 - 22 | Bir veri ajanı fiilen neyden yapılır |
-| III. Ne yapmalı | 23 - 38 | Riskler, guardrail'lar, nereden başlanır |
+| I. Neden değişmeli | 3 - 19 | DataOps nedir, bugün nasıl yönetiliyor, nereye yetişemiyor |
+| II. Nasıl çalışıyor | 20 - 26 | Bir veri ajanı fiilen neyden yapılır |
+| III. Ne yapmalı | 27 - 42 | Riskler, guardrail'lar, nereden başlanır |
+
+**Seviye:** başlangıç üstü. Hedef kitle yalnızca veri ekipleri değil, konuya
+meraklı ama arka planı olmayan kişiler de. Bu yüzden Perde I önce ortak dili
+kuruyor: veri pipeline'ı nedir, DataOps nedir ve döngüsü nasıl işler, kod bugün
+hangi onay yolculuğundan geçerek production'a çıkar, ve veride bu döngü neden
+yazılımdakinden farklıdır. Terimler ilk geçtikleri slaytta tanımlanır; 5. ve 42.
+slayttaki kutucuk sözlüğü açar.
+
+Slayt 19 kapsam haritası: Agentic Data Engineering'in yedi uygulama alanı ve
+demonun bunlardan hangisi olduğu. Sunumun geri kalanı yedisinin de altında yatan
+aynı mekanizmayı anlatıyor.
 
 Slaytların çoğu adım adım kuruluyor: aynı slayt numarasında kalıp her `→` bir
 bileşen ekliyor. Slayt açıldığında hiçbir adım açık değildir, yani ilk bileşen de
-diğerleri gibi bir tıklamayla gelir. Ana hattın tamamı 147 tıklama, yani 45
-dakikada adım başına ortalama 18 saniye. Kaynak künyeleri adım değildir: slayt
+diğerleri gibi bir tıklamayla gelir. Ana hattın tamamı 160 tıklama, yani 45
+dakikada adım başına ortalama 17 saniye. Kaynak künyeleri adım değildir: slayt
 açılır açılmaz altta dururlar.
 
 ---
@@ -69,10 +80,14 @@ sıradaki bileşeni açar. Sayaç aynı numarada kalır. Konuşmacı notları da
 adımlara göre numaralandı, yani notta `1)` yazan cümle ilk adıma karşılık
 geliyor.
 
-İki slaytta tıklanabilir kutucuk var. 10. slayttaki kutucuk kullanılmayan
-istatistiklerin listesini, 32. slayttaki kutucuk detaylı ekosistem tablosunu
-açar. İkisi de ana hattın dışında; ancak tıklarsanız görünürler ve geri
-dönmek için `←` yeterli.
+Dört slaytta tıklanabilir kutucuk var, hepsi ana hattın dışına açılır ve geri
+dönmek için `←` yeterlidir:
+
+| Slayt | Kutucuk |
+| --- | --- |
+| 5 ve 42 | Sözlük: sunumda geçen terimler |
+| 14 | Kullanmadığım istatistikler ve nedenleri |
+| 36 | Detaylı ekosistem karşılaştırması |
 
 Konuşmacı notları sunucu ekranında düzenlenebilir. Düzenlemeler tarayıcının
 `localStorage`'ında saklanır, dosyaya yazılmaz.
@@ -96,11 +111,11 @@ Seyirci sekmesini paylaşın, sunucu ekranı sizde kalsın.
 ```
 index.html            Sunumu açan sarmalayıcı. GitHub Pages girişi de bu.
 composition/          Slaytların kendisi: tek bir HyperFrames kompozisyonu
-  index.html          40 sahne, slideshow island ve zaman çizelgesi
+  index.html          45 sahne, slideshow island ve zaman çizelgesi
   assets/fonts/       Inter ve JetBrains Mono, latin + latin-ext
   vendor/gsap.min.js
 vendor/               Player ve slideshow bundle'ları
-scripts/              sync-island.mjs ve export-notes.mjs
+scripts/              island, fragment, numaralama ve not script'leri
 SOURCES.md            Her rakamın birincil kaynağı, ve kullanılmayanlar
 SPEAKER-NOTES.md      Konuşmacı notları, island'dan üretilir
 ```
@@ -111,6 +126,8 @@ Slayt içeriği, zamanlama ve konuşmacı notları tek bir yerde yaşıyor:
 ## Slaytları değiştirmek
 
 ```bash
+npm run fragments   # island'in adim noktalarini slaytlardan yeniden turetir
+npm run renumber    # sahne baslangic zamanlarini DOM sirasina gore yazar
 npm run sync        # island'i sarmalayiciya kopyalar, JSON'u dogrular
 npm run notes       # SPEAKER-NOTES.md dosyasini yeniden uretir
 npm run lint        # slideshow ve kompozisyon kurallari
@@ -125,11 +142,18 @@ sonra `npm run notes` çalıştırın, yoksa sarmalayıcı ile kompozisyon birbi
 ayrı düşer ve navigasyon sessizce bozulur.
 
 Sahneler 10 saniyelik bloklar hâlinde diziliyor: `n` numaralı sahne `n × 10`
-saniyede başlıyor. Yeni sahne eklerken üç yeri birlikte güncelleyin: sahnenin
-kendisi, çalışma zamanı script'indeki `SCENES` dizisi ve island. Üçü ayrışırsa
-lint yakalar.
+saniyede başlıyor. Araya slayt eklemek sonraki bütün zamanları kaydırdığı için
+bunu elle yapmayın:
 
-`npm run lint` iki uyarı verir: dosya uzun ve tek bir track'te 40 zamanlı öğe
+```bash
+npm run renumber && npm run fragments && npm run sync && npm run notes
+```
+
+`renumber` başlangıç zamanlarını DOM sırasından, `fragments` da adım noktalarını
+slaytlardaki `data-frag` işaretlerinden türetir. İkisi de tek doğruluk kaynağı
+olarak slaytların kendisini alır, yani island onları takip eder, tersi değil.
+
+`npm run lint` iki uyarı verir: dosya uzun ve tek bir track'te 45 zamanlı öğe
 var. İkisi de bilinçli. Bu bir deck, sahneleri ayrı dosyalara bölmek onları
 sürüklenmeye açık hâle getirirdi.
 
