@@ -4,12 +4,11 @@
   "type": "module",
   "scripts": {
     "sync": "node scripts/sync-island.mjs",
-    "dev": "npx --yes hyperframes@0.8.10 present ./composition",
-    "studio": "npx --yes hyperframes@0.8.10 preview ./composition --background",
-    "lint": "npx --yes hyperframes@0.8.10 lint ./composition",
-    "check": "npx --yes hyperframes@0.8.10 check ./composition",
+    "dev": "npx --yes hyperframes@0.8.19 present ./composition",
+    "studio": "npx --yes hyperframes@0.8.19 preview ./composition --background",
+    "lint": "npx --yes hyperframes@0.8.19 lint ./composition",
+    "check": "npx --yes hyperframes@0.8.19 check ./composition",
     "serve": "python3 -m http.server 4173 --directory .",
-    "notes": "node scripts/export-notes.mjs",
     "serve:stop": "lsof -ti tcp:4173 | xargs -I{} kill {}",
     "renumber": "node scripts/renumber-scenes.mjs",
     "fragments": "node scripts/sync-fragments.mjs"

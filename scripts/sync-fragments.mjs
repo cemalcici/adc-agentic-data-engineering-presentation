@@ -1,74 +1,62 @@
-// The island's hold points must match the slides' actual steps. Deriving them
-// from the DOM rather than maintaining them by hand is the only way that stays
-// true as slides move, and each scene is bounded at its own </section> because
-// the runtime script below the scenes also contains the string "data-frag" and
-// would otherwise be counted as a step on whichever scene happens to be last.
 import { readFileSync, writeFileSync } from "node:fs";
 
 const FILE = "composition/index.html";
-const SCENE_SECONDS = 10;
-const ENTRY_HOLD = 0.7; // a slide opens with nothing revealed
-const STEP_OFFSET = 1.2;
-const STEP_GAP = 0.4;
+const BASE_HOLD = 0.05;
+const REVEAL_DURATION = 0.42;
+const REST_PAD = 0.05;
 
 const html = readFileSync(FILE, "utf8");
+const sceneOrder = new Map(
+  [...html.matchAll(/data-composition-id="([a-z0-9-]+)" data-start="(\d+)" data-duration="10"/g)]
+    .filter(([, id]) => id !== "root")
+    .map(([, id, start]) => [id, Number(start)])
+);
 
-const scenes = [...html.matchAll(/<div class="scene-frame" id="scene-([a-z0-9-]+)"([\s\S]*?)<\/section>/g)];
-if (!scenes.length) {
-  console.error("No scenes found.");
-  process.exit(1);
+const pageBlock = html.match(/const pages\s*=\s*\{([\s\S]*?)\n    \};/);
+if (!pageBlock) throw new Error("Could not find the pages object.");
+
+const revealTimes = new Map();
+const entries = [...pageBlock[1].matchAll(/\n      '([a-z0-9-]+)':`([\s\S]*?)`(?=,\n      '|\n    $)/g)];
+for (const [, id, body] of entries) {
+  const times = [...body.matchAll(/data-at="([0-9.]+)"/g)].map((match) => Number(match[1]));
+  revealTimes.set(id, [...new Set(times)].sort((a, b) => a - b));
 }
-
-const steps = new Map();
-const order = new Map();
-scenes.forEach(([, id, body], index) => {
-  steps.set(id, (body.match(/data-frag/g) || []).length);
-  order.set(id, index);
-});
 
 const islandMatch = html.match(
-  /(<script type="application\/hyperframes-slideshow\+json">\n)([\s\S]*?)(\n    <\/script>)/
+  /(<script type="application\/hyperframes-slideshow\+json">\n)([\s\S]*?)(\n  <\/script>)/
 );
-if (!islandMatch) {
-  console.error("No slideshow island found.");
-  process.exit(1);
-}
+if (!islandMatch) throw new Error("Could not find the slideshow island.");
 const island = JSON.parse(islandMatch[2]);
 
-let touched = 0;
-const applyTo = (slide) => {
-  const id = slide.sceneId;
-  if (!order.has(id)) {
-    console.error(`Island references "${id}", which has no scene.`);
-    process.exit(1);
-  }
-  const count = steps.get(id);
-  const start = order.get(id) * SCENE_SECONDS;
+let changed = 0;
+function update(slide) {
+  const start = sceneOrder.get(slide.sceneId);
+  if (start === undefined) throw new Error(`Unknown scene: ${slide.sceneId}`);
+  const reveals = revealTimes.get(slide.sceneId) ?? [];
   const before = JSON.stringify(slide.fragments ?? null);
-  if (count > 0) {
+  if (reveals.length) {
     slide.fragments = [
-      Number((start + ENTRY_HOLD).toFixed(2)),
-      ...Array.from({ length: count }, (_, i) =>
-        Number((start + STEP_OFFSET + i * STEP_GAP).toFixed(2))
-      )
+      Number((start + BASE_HOLD).toFixed(2)),
+      ...reveals.map((time) => Number((time + REVEAL_DURATION + REST_PAD).toFixed(2))),
     ];
   } else {
     delete slide.fragments;
   }
-  if (JSON.stringify(slide.fragments ?? null) !== before) touched += 1;
-};
+  if (JSON.stringify(slide.fragments ?? null) !== before) changed += 1;
+}
 
-island.slides.forEach(applyTo);
-(island.slideSequences ?? []).forEach((sequence) => sequence.slides.forEach(applyTo));
+island.slides.forEach(update);
+(island.slideSequences ?? []).forEach((sequence) => sequence.slides.forEach(update));
 
-const indented = JSON.stringify(island, null, 2)
+const formatted = JSON.stringify(island, null, 2)
   .split("\n")
-  .map((line) => (line.trim() ? "      " + line : line))
+  .map((line) => (line.trim() ? "  " + line : line))
   .join("\n");
+const next =
+  html.slice(0, islandMatch.index + islandMatch[1].length) +
+  formatted +
+  html.slice(islandMatch.index + islandMatch[1].length + islandMatch[2].length);
+writeFileSync(FILE, next);
 
-writeFileSync(FILE, html.slice(0, islandMatch.index + islandMatch[1].length) + indented + html.slice(islandMatch.index + islandMatch[1].length + islandMatch[2].length));
-
-const clicks = island.slides.reduce((sum, s) => sum + Math.max(1, (s.fragments ?? []).length), 0);
-console.log(
-  `Synced ${island.slides.length} main slides (${touched} changed). Main-line walk: ${clicks} clicks.`
-);
+const clicks = island.slides.reduce((sum, slide) => sum + Math.max(1, slide.fragments?.length ?? 0), 0);
+console.log(`Synced ${island.slides.length} main slides (${changed} changed). Main-line walk: ${clicks} clicks.`);
