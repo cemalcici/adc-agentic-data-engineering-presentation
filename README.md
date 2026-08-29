@@ -14,17 +14,15 @@ doğrulama, yetki ve insan onayı sınırlarını tarif edebilmelidir.
 - 45 dakika anlatım
 - 15 dakika canlı demo
 - Sorular için 8 teknik ek slayt
-- 32 ana sahne; son iki sahne demo sonrası kapanış için
-- En fazla 85 anlamlı ilerleme eylemi
+- 36 ana sahne; son iki sahne demo sonrası kapanış için
+- En fazla 90 anlamlı ilerleme eylemi
 
-Ana anlatı altı bölümden oluşur:
+Ana anlatı dört görünür bölümden oluşur:
 
-1. Yanlış yeşil problemi
-2. SDLC ve DataOps ortak dili
-3. Agentic Data Engineering büyük resmi
-4. Datacının gözünden ajan
-5. Güvenli başlangıç ve kademeli otonomi
-6. Demonun büyük haritadaki yeri
+1. Sorunu görmek
+2. Kuraldan ajana
+3. Güvenilir ajan
+4. Kavramdan sisteme
 
 ## Sunumu açmak
 

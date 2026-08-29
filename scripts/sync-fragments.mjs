@@ -7,7 +7,7 @@ const REST_PAD = 0.05;
 
 const html = readFileSync(FILE, "utf8");
 const sceneOrder = new Map(
-  [...html.matchAll(/data-composition-id="([a-z0-9-]+)" data-start="(\d+)" data-duration="10"/g)]
+  [...html.matchAll(/data-composition-id="([a-z0-9-]+)" data-start="([0-9.]+)" data-duration="[0-9.]+"/g)]
     .filter(([, id]) => id !== "root")
     .map(([, id, start]) => [id, Number(start)])
 );
