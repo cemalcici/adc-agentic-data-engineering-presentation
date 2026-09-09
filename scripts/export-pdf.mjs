@@ -71,7 +71,10 @@ const exportSlide = async (sequenceId, slideIndex, fragmentIndex, pageNumber) =>
     deck.controller.syncTo(sequenceId, slideIndex, fragmentIndex);
     if (deck.chrome) deck.chrome.style.display = "none";
   }, { sequenceId, slideIndex, fragmentIndex });
-  await page.waitForTimeout(120);
+  // Fragment navigation replays the crossed reveal group for up to ~520 ms.
+  // Wait for that live transition to settle so the PDF captures the same
+  // stable hold state the audience sees between remote clicks.
+  await page.waitForTimeout(650);
   await page.evaluate(() => new Promise((resolve) => {
     requestAnimationFrame(() => requestAnimationFrame(resolve));
   }));
