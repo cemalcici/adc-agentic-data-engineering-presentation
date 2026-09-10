@@ -405,5 +405,135 @@
         }, 100);
       })();
     </script>
+    <script>
+      // Presentation remotes identify themselves as keyboards, but Windows
+      // models do not agree on one key pair. Some send Page Up / Page Down,
+      // some send arrows or Enter, and multimedia remotes may send media or
+      // browser navigation keys. Route those aliases through the slideshow's
+      // controller so the same remote works whether focus is on the shell or
+      // inside the slide iframe.
+      (function () {
+        var show = document.querySelector("hyperframes-slideshow");
+        var player = show && show.querySelector("hyperframes-player");
+        if (!show || !player) return;
+
+        var nextKeys = new Set([
+          "ArrowRight",
+          "ArrowDown",
+          "PageDown",
+          "Enter",
+          " ",
+          "Space",
+          "Spacebar",
+          "MediaTrackNext",
+          "BrowserForward",
+        ]);
+        var previousKeys = new Set([
+          "ArrowLeft",
+          "ArrowUp",
+          "PageUp",
+          "Backspace",
+          "MediaTrackPrevious",
+          "BrowserBack",
+        ]);
+        var nextCodes = new Set([
+          "ArrowRight",
+          "ArrowDown",
+          "PageDown",
+          "Enter",
+          "NumpadEnter",
+          "Space",
+          "MediaTrackNext",
+          "BrowserForward",
+        ]);
+        var previousCodes = new Set([
+          "ArrowLeft",
+          "ArrowUp",
+          "PageUp",
+          "Backspace",
+          "MediaTrackPrevious",
+          "BrowserBack",
+        ]);
+        var nextKeyCodes = new Set([13, 32, 34, 39, 40, 176]);
+        var previousKeyCodes = new Set([8, 33, 37, 38, 177]);
+
+        function isInteractiveTarget(target) {
+          if (!target || target.nodeType !== 1) return false;
+          return Boolean(
+            target.isContentEditable ||
+              target.closest("input, textarea, select, button, a[href], [contenteditable='true']"),
+          );
+        }
+
+        function directionOf(event) {
+          if (
+            nextKeys.has(event.key) ||
+            nextCodes.has(event.code) ||
+            nextKeyCodes.has(event.keyCode)
+          ) return 1;
+          if (
+            previousKeys.has(event.key) ||
+            previousCodes.has(event.code) ||
+            previousKeyCodes.has(event.keyCode)
+          ) return -1;
+          return 0;
+        }
+
+        function navigate(event) {
+          if (
+            event.defaultPrevented ||
+            event.repeat ||
+            event.altKey ||
+            event.ctrlKey ||
+            event.metaKey ||
+            isInteractiveTarget(event.target)
+          ) return;
+
+          var direction = directionOf(event);
+          if (!direction || !show.controller) return;
+
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          if (direction > 0) show.controller.next();
+          else show.controller.prev();
+        }
+
+        window.addEventListener("keydown", navigate, true);
+        show.addEventListener("pointerdown", function () {
+          show.focus({ preventScroll: true });
+        });
+
+        var attachedFrame = null;
+        var attachedWindow = null;
+        function attachToSlideFrame() {
+          var frame = player.iframeElement;
+          var frameWindow = frame && frame.contentWindow;
+          if (!frameWindow) return false;
+
+          if (frame !== attachedFrame) {
+            if (attachedFrame) {
+              attachedFrame.removeEventListener("load", attachToSlideFrame);
+            }
+            frame.addEventListener("load", attachToSlideFrame);
+            attachedFrame = frame;
+          }
+
+          if (frameWindow === attachedWindow) return true;
+          if (attachedWindow) {
+            try {
+              attachedWindow.removeEventListener("keydown", navigate, true);
+            } catch (_) {}
+          }
+          frameWindow.addEventListener("keydown", navigate, true);
+          attachedWindow = frameWindow;
+          return true;
+        }
+
+        var tries = 0;
+        var timer = setInterval(function () {
+          if (attachToSlideFrame() || ++tries > 80) clearInterval(timer);
+        }, 100);
+      })();
+    </script>
   </body>
 </html>
