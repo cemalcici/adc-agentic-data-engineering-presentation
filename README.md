@@ -1,86 +1,106 @@
-# ADC #3 - Agentic Data Engineering: DataOps'ta kuraldan ajana
+# ADC #3 - Agentic Data Engineering: DataOps'ta Kuraldan Ajana
 
-Agentic Data Engineering kavramını veri ekiplerinin çalışma biçimi üzerinden
-anlatan, 45 dakikalık sunum ve 15 dakikalık canlı demo için hazırlanmış açık
-kaynak HyperFrames sunumu.
+An open-source presentation about Agentic Data Engineering, designed for a
+45-minute talk followed by a 15-minute live demo.
 
-Sunumun ana çıktısı şudur: Katılımcı Agentic Data Engineering'in ne olduğunu,
-otomasyon ve copilot'tan nasıl ayrıldığını açıklayabilmeli; kendi veri stack'inde
-uygun bir ilk kullanım alanını seçebilmeli ve bu alan için gereken bağlam,
-doğrulama, yetki ve insan onayı sınırlarını tarif edebilmelidir.
+**[View the presentation](https://cemalcici.github.io/adc-agentic-data-engineering-presentation/)**
 
-## Yapı
+## Purpose
 
-- 45 dakika anlatım
-- 15 dakika canlı demo
-- Sorular için 8 teknik ek slayt
-- 36 ana sahne; son iki sahne demo sonrası kapanış için
-- En fazla 90 anlamlı ilerleme eylemi
+Agentic Data Engineering is broader than adding an LLM to a pipeline or building
+a chatbot for a data team. This presentation introduces the concept through the
+way data systems are designed, operated, observed, and improved.
 
-Ana anlatı dört görünür bölümden oluşur:
+The talk starts with the familiar DataOps development and feedback cycle, then
+examines where deterministic rules work well and where they stop being enough.
+From there, it develops a practical view of an agent as a system that can
+interpret a goal, gather current evidence, use tools, validate its proposal, and
+stop at an explicit authority boundary.
 
-1. Sorunu görmek
-2. Kuraldan ajana
-3. Güvenilir ajan
-4. Kavramdan sisteme
+The goal is not to prescribe a specific vendor or technology stack. It is to
+give data professionals a durable mental model they can use to evaluate agentic
+capabilities in their own environment.
 
-## Sunumu açmak
+## What the Presentation Aims to Provide
 
-```bash
-npm run dev
-```
+After the talk, an attendee should be able to:
 
-Komutun yazdığı yerel adresi açın. Sağ alttaki **Present** düğmesi veya `P`
-tuşu, seyirci ekranını ayrı sekmede açar. İleri ve geri gitmek için ok tuşları
-ya da Space ve Backspace kullanılabilir.
+- Explain how an agent differs from deterministic automation and a copilot.
+- Recognize Agentic Data Engineering as a broader approach across the data
+  lifecycle, rather than a single tool or workflow.
+- Identify the context and evidence an agent needs before making a decision.
+- Distinguish grounding from validation and understand why both are necessary.
+- Define tool permissions, guardrails, human approval points, and operational
+  limits for a trustworthy agent.
+- Select a bounded first use case whose success can be measured, tested, and
+  safely reversed.
 
-Statik paylaşımda depo kökündeki `index.html` doğrudan açılabilir. Bazı
-tarayıcılar `file://` üzerinden iframe erişimini sınırlandırır; bu durumda:
+The live demo makes one small but valuable part of this picture concrete. It is
+an example of the concept, not the definition of the concept itself.
+
+## Run Locally
 
 ```bash
 npm run serve
 ```
 
-ve ardından `http://localhost:4173` adresini açın.
+Then open [http://localhost:4173](http://localhost:4173). Using a local server is
+recommended because some browsers restrict iframe access when the files are
+opened directly with `file://`.
 
-## Dosyalar
+Navigate with the arrow keys, Page Up and Page Down, Enter, Space, or a supported
+presentation remote. Press `F` to enter full-screen mode.
 
-- `index.html`: Katılımcının açtığı sunum kabuğu
-- `composition/index.html`: HyperFrames slayt kompozisyonu
-- `assets/`: Konuşmacı fotoğrafı ve LinkedIn QR kodları
-- `SOURCES.md`: Slayt bazında birincil kaynaklar
-- `FURTHER-READING.md`: Konuyu derinleştirmek isteyenler için okuma yolu
-- `frame.md`: Görsel dil, renk semantiği ve hareket kuralları
+For HyperFrames development mode, run:
 
-Anlatıcı ve prova notları bu açık kaynak depoda bulunmaz. Slaytlar, notlara
-bağımlı olmadan kendi başına izlenebilir biçimde tasarlanmıştır.
+```bash
+npm run dev
+```
+
+## Repository Contents
+
+- `index.html`: The public presentation shell.
+- `composition/index.html`: The HyperFrames slide composition.
+- `assets/`: Presentation visuals, speaker identity assets, and QR codes.
+- `SOURCES.md`: Primary references organized by slide.
+- `FURTHER-READING.md`: A guided reading list for exploring the subject further.
+- `frame.md`: The visual language, color semantics, and motion rules.
+
+Speaker and rehearsal notes are intentionally not included in this public
+repository. The slides are designed to remain understandable without access to
+those private notes.
 
 ## Demo
 
-Canlı demo ayrı depoda paylaşılır: `adc-agentic-data-engineering-demo`.
+The live proof of concept is maintained in the separate
+[adc-agentic-data-engineering-demo](https://github.com/cemalcici/adc-agentic-data-engineering-demo)
+repository.
 
-Demo, Agentic Data Engineering'in tamamını temsil etmez. Dört bölgeli kapsam
-haritasındaki **İşlet ve iyileştir** alanından kontrollü bir self-healing
-senaryosunu gösterir: schema drift, kök neden analizi, doğrulanmış düzeltme,
-insan onayı ve yeniden çalıştırma.
+The demo focuses on a controlled self-healing scenario within the **Operate and
+Improve** area of the broader Agentic Data Engineering landscape. It demonstrates
+schema drift detection, root cause analysis, a validated fix, human approval,
+and a controlled rerun.
 
-## Tasarım ilkeleri
+## Design Principles
 
-- Her slaytta tek fikir ve tek baskın görsel
-- Açık zemin açıklama, koyu zemin anlatı eşiği ve teknik çekirdek için
-- Mavi kanıt ve bağlam, mercan eylem ve dikkat, yeşil doğrulanmış başarı,
-  kırmızı arıza anlamına gelir
-- Animasyon yalnızca yeni bir düşünce açtığında kullanılır
-- Başlık ve grafik aynı sahne matematiğine bağlıdır
-- Türkçe metin sentence case kullanır; em dash ve en dash kullanılmaz
+- One idea and one dominant visual per slide.
+- Light backgrounds for explanation; dark backgrounds for narrative thresholds
+  and the technical core.
+- Blue for evidence and context, coral for action and attention, green for
+  validated success, and red for failure.
+- Animation only when it reveals a new part of the argument.
+- Slide titles and visuals follow the same reveal logic.
+- Audience-facing copy follows Turkish grammar while retaining established
+  English technical terminology where it improves clarity.
 
-## Doğrulama
+## Validation
 
 ```bash
 npm run sync
 npm run check
+npm run test:remote
 ```
 
-`sync`, slideshow manifestini kompozisyondan kullanıcıya açık `index.html`
-dosyasına taşır. `check`, lint, runtime, layout, hareket ve kontrast kontrollerini
-çalıştırır.
+`sync` copies the slideshow manifest from the composition into the public
+presentation shell. `check` runs lint, runtime, layout, motion, and contrast
+checks. `test:remote` verifies keyboard and presentation-remote navigation.
