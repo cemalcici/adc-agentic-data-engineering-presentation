@@ -1,7 +1,7 @@
 # ADC #3 - Agentic Data Engineering: DataOps'ta Kuraldan Ajana
 
-An open-source presentation about Agentic Data Engineering, designed for a
-45-minute talk followed by a 15-minute live demo.
+An open-source presentation about Agentic Data Engineering and its role in the
+way modern data systems are designed, operated, observed, and improved.
 
 **[View the presentation](https://cemalcici.github.io/adc-agentic-data-engineering-presentation/)**
 
